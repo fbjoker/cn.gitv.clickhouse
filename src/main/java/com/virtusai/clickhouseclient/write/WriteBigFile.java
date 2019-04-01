@@ -237,7 +237,7 @@ public class WriteBigFile {
         //一次插入的数据是10W，
         for (int iter = 0; iter <row*10; iter++) {
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 100000; i++) {
 
                 stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
             }

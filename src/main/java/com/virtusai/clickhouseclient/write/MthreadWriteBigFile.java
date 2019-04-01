@@ -100,7 +100,7 @@ public class MthreadWriteBigFile {
         MappedByteBuffer mbb = null;
         byte[] data = null;
         long len = LEN*row;
-        int threadNumber=10;
+        int threadNumber=20;
 
 
 
@@ -115,7 +115,7 @@ public class MthreadWriteBigFile {
                 fixedThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i = 0; i < 1000; i++) {
+                        for (int i = 0; i < 10000; i++) {
 
                             stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
                         }
