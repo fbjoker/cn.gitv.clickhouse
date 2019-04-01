@@ -16,20 +16,18 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.virtusai.clickhouseclient.utils.DataUtils.getRandomIp;
 import static com.virtusai.clickhouseclient.utils.DataUtils.nextTime;
 
 /**
- * 多线程版本
- * @author Alex
+ * NIO写大文件比较
+ * @author Will
  *
  */
-public class MthreadWriteBigFile {
+@SuppressWarnings("all")
+public class WriteBigFileFast {
 
     // data chunk be written per time
     private static final int DATA_CHUNK = 128 * 1024 * 1024;
@@ -39,6 +37,139 @@ public class MthreadWriteBigFile {
 //    private static final long LEN = 1L * 1024 * 1024  * 1024L;
     private static final long LEN = 30L * 1024 * 1024  * 1024L;
 
+
+    public static void writeWithFileChannel() throws IOException {
+        File file = new File("d:/test.dat");
+        if (file.exists()) {
+            file.delete();
+        }
+
+        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        FileChannel fileChannel = raf.getChannel();
+
+        byte[] data = null;
+        long len = LEN;
+        ByteBuffer buf = ByteBuffer.allocate(DATA_CHUNK);
+        int dataChunk = DATA_CHUNK / (1024 * 1024);
+        while (len >= DATA_CHUNK) {
+            System.out.println("write a data chunk: " + dataChunk + "MB");
+
+            buf.clear(); // clear for re-write
+            data = new byte[DATA_CHUNK];
+            for (int i = 0; i < DATA_CHUNK; i++) {
+                buf.put(data[i]);
+            }
+
+            data = null;
+
+            buf.flip(); // switches a Buffer from writing mode to reading mode
+            fileChannel.write(buf);
+            fileChannel.force(true);
+
+            len -= DATA_CHUNK;
+        }
+
+        if (len > 0) {
+            System.out.println("write rest data chunk: " + len + "B");
+            buf = ByteBuffer.allocateDirect((int) len);
+            data = new byte[(int) len];
+            for (int i = 0; i < len; i++) {
+                buf.put(data[i]);
+            }
+
+            buf.flip(); // switches a Buffer from writing mode to reading mode, position to 0, limit not changed
+            fileChannel.write(buf);
+            fileChannel.force(true);
+            data = null;
+        }
+
+        fileChannel.close();
+        raf.close();
+    }
+
+    /**
+     * write big file with MappedByteBuffer
+     *
+     * @throws IOException
+     */
+    public static void writeWithMappedByteBuffer() throws IOException {
+        File file = new File("d:/test.dat");
+        if (file.exists()) {
+            file.delete();
+        }
+
+        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        FileChannel fileChannel = raf.getChannel();
+        long pos = 0;
+        MappedByteBuffer mbb = null;
+        byte[] data = null;
+        long len = LEN;
+        int dataChunk = DATA_CHUNK / (1024 * 1024);
+        while (len >= DATA_CHUNK) {
+            System.out.println("write a data chunk: " + dataChunk + "MB");
+
+            mbb = fileChannel.map(FileChannel.MapMode.READ_WRITE, pos, DATA_CHUNK);
+            data = new byte[DATA_CHUNK];
+            mbb.put(data);
+
+            data = null;
+
+            len -= DATA_CHUNK;
+            pos += DATA_CHUNK;
+        }
+
+
+
+        data = null;
+        //unmap(mbb);   // release MappedByteBuffer
+        fileChannel.close();
+    }
+
+    public static void writeWithTransferTo() throws IOException {
+        File file = new File("d:/test.dat");
+        if (file.exists()) {
+            file.delete();
+        }
+
+        RandomAccessFile raf = new RandomAccessFile(file, "rw");
+        FileChannel toFileChannel = raf.getChannel();
+
+        long len = LEN;
+        byte[] data = null;
+        ByteArrayInputStream bais = null;
+        ReadableByteChannel fromByteChannel = null;
+        long position = 0;
+        int dataChunk = DATA_CHUNK / (1024 * 1024);
+        while (len >= DATA_CHUNK) {
+            System.out.println("write a data chunk: " + dataChunk + "MB");
+
+            data = new byte[DATA_CHUNK];
+            bais = new ByteArrayInputStream(data);
+            fromByteChannel = Channels.newChannel(bais);
+
+            long count = DATA_CHUNK;
+            toFileChannel.transferFrom(fromByteChannel, position, count);
+
+            data = null;
+            position += DATA_CHUNK;
+            len -= DATA_CHUNK;
+        }
+
+        if (len > 0) {
+            System.out.println("write rest data chunk: " + len + "B");
+
+            data = new byte[(int) len];
+            bais = new ByteArrayInputStream(data);
+            fromByteChannel = Channels.newChannel(bais);
+
+            long count = len;
+            toFileChannel.transferFrom(fromByteChannel, position, count);
+        }
+
+        data = null;
+        toFileChannel.close();
+        fromByteChannel.close();
+    }
 
     /**
      * 在MappedByteBuffer释放后再对它进行读操作的话就会引发jvm crash，在并发情况下很容易发生
@@ -86,7 +217,6 @@ public class MthreadWriteBigFile {
      *
      * @throws IOException
      */
-//    @SuppressWarnings("all")
     public static void writeBigDataWithMappedByteBuffer(long id,String fieldsType, int fieldNumber,String[] partner,int row,String path) throws IOException {
 
         File file = new File(path);
@@ -100,75 +230,31 @@ public class MthreadWriteBigFile {
         MappedByteBuffer mbb = null;
         byte[] data = null;
         long len = LEN*row;
-        int threadNumber=20;
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 100000; i++) {
+
+            stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
+        }
+
+
+        //一次插入的数据是10W，
+        for (int iter = 0; iter <row*10; iter++) {
 
 
 
-
-        //一次插入的数据是20W，
-        for (int iter = 0; iter <row*5; iter++) {
-//            StringBuilder stringBuilder = new StringBuilder();
-            StringBuffer stringBuilder = new StringBuffer();
-            //用来计算，只有当所有的线程都执行完毕countDownLatch.await()才会释放
-            final CountDownLatch countDownLatch = new CountDownLatch(threadNumber);
-            long start11 = System.currentTimeMillis();
-            ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadNumber+1);
-            long end11 = System.currentTimeMillis();
-            System.out.println("write:"+(end11-start11));
-            for (int i = 0; i < threadNumber; i++) {
-
-                fixedThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        StringBuilder stringBuilderthread = new StringBuilder();
-
-                        long start = System.currentTimeMillis();
-                        for (int i = 0; i < 500; i++) {
-
-//                            stringBuilderthread.append( generateData(id, fieldsType, fieldNumber, partner));
-
-                            stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
-
-                        }
-                        long end = System.currentTimeMillis();
-                        System.out.println(Thread.currentThread().getName()+":"+(end-start));
-
-//                        stringBuilder.append(stringBuilderthread);
-//                        System.out.println(stringBuilder.length());
-                        countDownLatch.countDown();
-                    }
-                });
-
-            }
-            try {
-                long start = System.currentTimeMillis();
-                countDownLatch.await();
-                long end = System.currentTimeMillis();
-                System.out.println(Thread.currentThread().getName()+":"+(end-start));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-//            System.out.println(stringBuilder.length());
             data = stringBuilder.toString().getBytes();
-            int datalength = data.length;
-            System.out.println("write a data chunk: " + datalength/1024/1024 + "MB");
-
-
-            mbb = fileChannel.map(FileChannel.MapMode.READ_WRITE, pos, datalength);
+            System.out.println("write a data chunk: " + data.length/1024/1024 + "MB");
+            mbb = fileChannel.map(FileChannel.MapMode.READ_WRITE, pos, data.length);
 //            data = new byte[DATA_CHUNK];
             mbb.put(data);
 
 
-            len -= datalength;
-            pos += datalength;
+
+            len -= data.length;
+            pos += data.length;
             data = null;
             //System.out.println("len:"+len);
-
-            //一定要关闭
-            fixedThreadPool.shutdown();
-            System.out.println("end");
-
         }
 
 
@@ -176,7 +262,7 @@ public class MthreadWriteBigFile {
         //unmap(mbb);   // release MappedByteBuffer
         fileChannel.close();
     }
-    public static StringBuilder generateData(Long id,String fieldsType, int fieldNumber,String[] partner) {
+    public static String generateData(Long id,String fieldsType, int fieldNumber,String[] partner) {
 
         StringBuilder data = new StringBuilder();
         data.append (id+",");
@@ -203,7 +289,7 @@ public class MthreadWriteBigFile {
         }
         data.append( (Math.random() * 100)+",");
         data.append( (Math.random() * 100)+"\n");
-        return data;
+        return data.toString();
     }
 
 

@@ -237,10 +237,13 @@ public class WriteBigFile {
         //一次插入的数据是10W，
         for (int iter = 0; iter <row*10; iter++) {
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < 100000; i++) {
+            long start = System.currentTimeMillis();
+            for (int i = 0; i < 10000; i++) {
 
                 stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
             }
+            long end = System.currentTimeMillis();
+            System.out.println(end-start);
 
             data = stringBuilder.toString().getBytes();
             System.out.println("write a data chunk: " + data.length/1024/1024 + "MB");
