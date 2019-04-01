@@ -1,0 +1,700 @@
+cat /data1/data/clickhouse_test_data/test.dat | clickhouse-client --host=127.0.0.1 --port=9000 --database=test --query="INSERT INTO mergetree1 FORMAT CSVWithNames" --input_format_allow_errors_num=100000
+
+drop table if exists test.mergetree1;
+
+
+create table test.mergetree1 (std  Date, id UInt16, name String, cnt UInt16) ENGINE=MergeTree(std, (id, name), 8192);
+
+
+select table, countDistinct(name) as num_cols,formatReadableSize(sum(data_compressed_bytes) as c) as comp,
+formatReadableSize(sum(data_uncompressed_bytes)as r) as raw,
+c/r as com_r
+from system.columns
+group by table
+order by raw desc
+limit 10;
+
+clickhouse-client -h  127.0.0.1 -m -d test -f CSV -q "select * from vodplay where id =1 " > testvodplay.csv
+
+clickhouse-client -h  127.0.0.1 -m -d test -f CSV -q "select * from test.vodplay limit 100000000 " > testvodplay.csv
+
+
+awk '{print NR}' testvodplay.csv | tail -n1
+
+
+
+create table test.datain (x  UInt16, y String, z UInt16,std Date) ENGINE=MergeTree(std, (x, y), 8192);
+
+
+
+
+
+
+insert into test.datain( x, y, z,std) values ( 1, 'a', 10,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 1, 'a', 13,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 1, 'b', 14,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 1, 'b', 15,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 2, 'c', 16,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 3, 'b', 17,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 3, 'c', 18,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 3, 'b', 19,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 4, 'e', 20,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 5, 'b', 20,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 5, 'b', 21,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 6, 'b', 22,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 6, 'c', 23,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 7, 'a', 24,'2018-06-01');
+insert into test.datain( x, y, z,std) values ( 7, 'a', 25,'2018-06-01');
+
+
+
+
+
+
+
+nohup java -jar randomData.jar test.vodplay 1000000 100
+nohup java -jar clickhouseclient_api_test1.jar 100  > ./console_output
+
+
+CREATE DATABASE IF NOT EXISTS test;
+
+drop table if exists test.metrics
+
+CREATE TABLE test.metrics (
+    device_id FixedString(36),
+    metric String,
+    time UInt64,
+    value Float64
+)
+ENGINE = Memory;
+
+ CREATE TABLE test.vodplay_datainput_test ( id Int64,  partner String,  time String,  mac String,  knyx Nullable(String),  wtksbbw Nullable(String),  bdufbzes Nullable(String),  ovvwf Nullable(String),  clfgy Nullable(String),  cpvbymo Nullable(String),  rpum Nullable(String),  vrvdl Nullable(String),  jahwv Nullable(String),  nkqiq Nullable(String),  gvcp Nullable(String),  cfqrm Nullable(String),  pgqgm Nullable(String),  ltsr Nullable(String),  jbyk Nullable(String),  ulhsjkar Nullable(String),  oump Nullable(String),  drabtpf Nullable(String),  obkmxfj Nullable(String),  olsec Nullable(String),  gafop Nullable(String),  tgamugqd Nullable(String),  pxcrl Nullable(String),  ihhblvki Nullable(String),  eposmeid Nullable(String),  xcfy Nullable(String),  knpuw Nullable(String),  zxrhnr Nullable(String),  mpueilc Nullable(String),  pkzn Nullable(String),  fcrntn Nullable(String),  yfbsvju Nullable(String),  engytdz Nullable(String),  ilfql Nullable(String),  kdefi Nullable(String),  ixdvl Nullable(String),  dqpxv Nullable(String),  fvprz Nullable(String),  ysuwkc Nullable(String),  npet Nullable(String),  xgbx Nullable(String),  omqqie Nullable(String),  blnns Nullable(String),  duhfwtyr Nullable(String),  geaso Nullable(String),  whcat Nullable(String),  fvbutg Nullable(String),  hius Nullable(String),  pnmka Nullable(String),  lezkos Nullable(String),  snyudwnh Nullable(String),  nlecv Nullable(String),  cqdslm Nullable(String),  gbonb Nullable(String),  kpdp Nullable(String),  encunh Nullable(String),  qpjajs Nullable(String),  kjnu Nullable(String),  gofsh Nullable(String),  licc Nullable(String),  jozci Nullable(String),  iteinbgi Nullable(String),  xefus Nullable(String),  ffpmn Nullable(String),  yhvrkxh Nullable(String),  cxwixbw Nullable(String),  qcezs Nullable(String),  znnxajr Nullable(String),  ssfuves Nullable(String),  pfane Nullable(String),  kolssld Nullable(String),  yykb Nullable(String),  xlnxgk Nullable(String),  anycirye Nullable(String),  mabop Nullable(String),  dytje Nullable(String),  gmoamj Nullable(String),  yyzldc Nullable(String),  pixynyqc Nullable(String),  hkbiyuk Nullable(String),  xikdpdb Nullable(String),  lnyfovb Nullable(String),  cgtljdt Nullable(String),  asootylx Nullable(String),  ohkkew Nullable(String),  qjeafhfi Nullable(String),  ueifpuv Nullable(String),  osqruuv Nullable(String),  ikepfqx Nullable(String),  kqavit Nullable(String),  alhvbuxh Nullable(String),  eqpksv Nullable(String),  objdyxb Nullable(String),  ycnqnsf Nullable(String),  vivcm Nullable(String),  bltlu Nullable(String),  yzpfkuaw Nullable(String),  fdrusdj Nullable(String),  iqmisreb Nullable(String),  ekachmy Nullable(String),  fvux Nullable(String),  wexc Nullable(String),  tifi Nullable(String),  kmkvzwhk Nullable(String),  arnvd Nullable(String),  dfnwefa Nullable(String),  lsluyqx Nullable(String),  mppfatl Nullable(String),  hibxlso Nullable(String),  pgyclo Nullable(String),  kxout Nullable(String),  qbuqek Nullable(String),  jqlppib Nullable(String),  ebneux Nullable(String),  uwpxwcq Nullable(String),  fxavxem Nullable(String),  bcxcj Nullable(String),  btmlcmy Nullable(String),  piewv Nullable(String),  ollcfn Nullable(String),  vpmgfeqo Nullable(String),  dtdgchw Nullable(String),  ctjim Nullable(String),  wudyfaq Nullable(String),  tmiggfm Nullable(String),  xjyui Nullable(String),  rcbzylb Nullable(String),  rcvbmn Nullable(String),  ifvbw Nullable(String),  ofmf Nullable(String),  rlsmeu Nullable(String),  tmcytojh Nullable(String),  yclxfmdu Nullable(String),  idqm Nullable(String),  wqnkfqd Nullable(String),  buolnqrx Nullable(String),  bdrlo Nullable(String),  rdysaj Nullable(String),  khrjnim Nullable(String),  hsqoqh Nullable(String),  ppvhwckb Nullable(String),  nmhyw Nullable(String),  gnmlxcy Nullable(String),  dxjkowmz Nullable(String),  nmtogu Nullable(String),  jvdpsfh Nullable(String),  dhbpcmg Nullable(String),  jxoqn Nullable(String),  sfvafw Nullable(String),  rplsjou Nullable(String),  ovxqwt Nullable(String),  fwhitp Nullable(String),  socvpeb Nullable(String),  tvrbaa Nullable(String),  ppcwm Nullable(String),  cjdsddy Nullable(String),  muqkgj Nullable(String),  zqmklgxr Nullable(String),  hixyy Nullable(String),  rvajwqr Nullable(String),  xtswutn Nullable(String),  exjgenmc Nullable(String),  nyse Nullable(String),  djblh Nullable(String),  uevuse Nullable(String),  xoox Nullable(String),  lyggl Nullable(String),  wwexa Nullable(String),  wwmym Nullable(String),  jccpf Nullable(String),  ksmf Nullable(String),  giozpt Nullable(String),  vbsiw Nullable(String),  sqyrqwb Nullable(String),  gbwso Nullable(String),  apiiefn Nullable(String),  fftgtbqe Nullable(String),  fbtu Nullable(String),  ndkycpp Nullable(String),  bggjub Nullable(String),  fnjmqtb Nullable(String),  ygjkrq Nullable(String),  xqmyew Nullable(String),  uprlwcw Nullable(String),  jcthlp Nullable(String),  rikvk Nullable(String),  bumtkv Nullable(String),  cpivhf Nullable(String),  nmwrv Nullable(String),  hemnw Nullable(String),  niwybv Nullable(String),  fqlf Nullable(String),  gfobbvf Nullable(String),  owqmfkz Nullable(String),  jzbmf Nullable(String),  nkvkq Nullable(String),  ryvxpsk Nullable(String),  ycgsjpv Nullable(String),  wkylo Nullable(String),  orwopzl Nullable(String),  vtiyf Nullable(String),  hsqryov Nullable(String),  olbky Nullable(String),  pejsq Nullable(String),  mibt Nullable(String),  qmiiynu Nullable(String),  cxebtsk Nullable(String),  kkim Nullable(String),  uyjcger Nullable(String),  bjrkooc Nullable(String),  bsbf Nullable(String),  njvbqj Nullable(String),  euvw Nullable(String),  msejfb Nullable(String),  gxrtwfhm Nullable(String),  udcbl Nullable(String),  emryhhn Nullable(String),  njfwhvj Nullable(String),  wmauv Nullable(String),  bmccx Nullable(String),  jhqev Nullable(String),  ktgjdzc Nullable(String),  sglys Nullable(String),  bsepkhxm Nullable(String),  yxgnfsr Nullable(String),  hocpi Nullable(String),  sebwati Nullable(String),  ppfvjih Nullable(String),  ydwm Nullable(String),  fmka Nullable(String),  xfooceb Nullable(String),  inimqzxx Nullable(String),  huuotjt Nullable(String),  tmhirnol Nullable(String),  rueif Nullable(String),  htjsytj Nullable(String),  cdojktzo Nullable(String),  vkjd Nullable(String),  zukkfmfe Nullable(String),  tpbvvfs Nullable(String),  jvpkvgnm Nullable(String),  rwgivjl Nullable(String),  qgoblfi Nullable(String),  phsbdryl Nullable(String),  uycjyj Nullable(String),  pvvhpdd Nullable(String),  qmuxfbv Nullable(String),  vjxiyev Nullable(String),  srhexyh Nullable(String),  bifsnwn Nullable(String),  ktni Nullable(String),  eqvxytd Nullable(String),  bngmykk Nullable(String),  vrrqpt Nullable(String),  kifjk Nullable(String),  ahikr Nullable(String),  dkfqbo Nullable(String),  khjmv Nullable(String),  mmnwfmh Nullable(String),  fksquw Nullable(Int32),  bxvdh Nullable(Int32),  hsiiynk Nullable(Int32),  qfhijyxm Nullable(Int32),  tbfaj Nullable(Int32),  xdwhlvk Nullable(Int32),  xahtmj Nullable(Int32),  umqnzdf Nullable(Int32),  dieovuc Nullable(Int32),  vqbs Nullable(Int32),  iafinjq Nullable(Int32),  cgckqjh Nullable(Int32),  jpcikn Nullable(Int32),  gzjorn Nullable(Int32),  cblexop Nullable(Int32),  rcejtw Nullable(Int32),  ujwbyumh Nullable(Int32),  yrbofo Nullable(Int32),  epveksq Nullable(Int32),  uvmv Nullable(Int32),  rcrng Nullable(Int32),  vqpjqgc Nullable(Int32),  rkibu Nullable(Int32),  ffzkpjd Nullable(Int32),  wdyoecf Nullable(Int32),  ulwuwq Nullable(Int32),  lflcld Nullable(Int32),  oclhyco Nullable(Int32),  phizml Nullable(Int32),  wrhe Nullable(Int32),  zjbxhzu Nullable(Int32),  ubyoqpm Nullable(Int32),  cjhbzbxm Nullable(Int32),  qxtpgv Nullable(Int32),  quwg Nullable(Int32),  hfgakaf Nullable(Int32),  lrqewsp Nullable(Int32),  lsjst Nullable(Int32),  uraiutx Nullable(Int32),  vntipr Nullable(Int32),  dyoxzeg Nullable(Int32),  augps Nullable(Int32),  yvoo Nullable(Int32),  ggwxgn Nullable(Int32),  blnkrsqs Nullable(Int32),  rsputdx Nullable(Int32),  hhhrv Nullable(Int32),  pkul Nullable(Int32),  hzrf Nullable(Int32),  nyzqznw Nullable(Int32),  hagks Nullable(Int32),  dfxx Nullable(Int32),  fpnec Nullable(Int32),  sdvl Nullable(Int32),  xhpwscq Nullable(Int32),  ejawl Nullable(Int32),  arnlkuks Nullable(Int32),  dbfgg Nullable(Int32),  xfrgfx Nullable(Int32),  hdluvyvv Nullable(Int32),  evzsyew Nullable(Int32),  qnnxr Nullable(Int32),  trijht Nullable(Int32),  ivzlwx Nullable(Int32),  rdxjmbu Nullable(Int32),  cghpqu Nullable(Int32),  qwriiip Nullable(Int32),  pnnsx Nullable(Int32),  jnhnb Nullable(Int32),  nlmkbrdc Nullable(Int32),  lxkypp Nullable(Int32),  qwcpu Nullable(Int32),  vjeb Nullable(Int32),  nwpmijqt Nullable(Int32),  yiqdv Nullable(Int32),  wvuhn Nullable(Int32),  dsle Nullable(Int32),  hxcvk Nullable(Int32),  ddxte Nullable(Int32),  vjtae Nullable(Int32),  ldgcxspl Nullable(Int32),  qqzqrd Nullable(Int32),  mrgsro Nullable(Int32),  svszss Nullable(Int32),  tmmdvq Nullable(Int32),  pkjuvvtn Nullable(Int32),  runjjsya Nullable(Int32),  vhvln Nullable(Int32),  fndvo Nullable(Int32),  wmpdcjy Nullable(Int32),  ptwe Nullable(Int32),  refomn Nullable(Int32),  mjtktet Nullable(Int32),  smni Nullable(Int32),  pyugee Nullable(Int32),  llxjjwcm Nullable(Int32),  yfduns Nullable(Int32),  gntqr Nullable(Int32),  ldfo Nullable(Int32),  bucms Nullable(Int32),  xvyggn Nullable(Int32),  cqgfein Nullable(Int32),  cmmky Nullable(Int32),  vlwdg Nullable(Int32),  tlst Nullable(Int32),  fkqpt Nullable(Int32),  hwbcik Nullable(Int32),  rwnictpi Nullable(Int32),  eezczruy Nullable(Int32),  ygpcgimx Nullable(Int32),  becm Nullable(Int32),  vgdmewl Nullable(Int32),  gidz Nullable(Int32),  fxnbu Nullable(Int32),  xbzxze Nullable(Int32),  mscxvj Nullable(Int32),  xvcgrn Nullable(Int32),  dsxhvn Nullable(Int32),  hxtru Nullable(Int32),  bmvjv Nullable(Int32),  qpuh Nullable(Int32),  rtflqb Nullable(Int32),  zhjivqg Nullable(Int32),  ovebt Nullable(Int32),  cghizojt Nullable(Int32),  vljrthr Nullable(Int32),  lurt Nullable(Int32),  pywq Nullable(Int32),  tylzu Nullable(Int32),  kdiwwjl Nullable(Int32),  noyisn Nullable(Int32),  lusdgey Nullable(Int32),  qetwl Nullable(Int32),  dkxbiqm Nullable(Int32),  bzhkzf Nullable(Int32),  qwbfdr Nullable(Int32),  cyogm Nullable(Int32),  neqsjno Nullable(Int32),  ygvli Nullable(Int32),  jjknydiy Nullable(Int32),  kxmv Nullable(Int32),  qdhmg Nullable(Int32),  jcizo Nullable(Int32),  ezofil Nullable(Int32),  jhvm Nullable(Int32),  eplzilu Nullable(Int32),  wijj Nullable(Int32),  sbqhbtg Nullable(Int32),  shjof Nullable(Int32),  buipxul Nullable(Int32),  qjjsu Nullable(Int64),  xaclgd Nullable(Int64),  tmxtyl Nullable(Int64),  migly Nullable(Int64),  mffpcxp Nullable(Int64),  qsqorlg Nullable(Float64),  dhljxoxd Nullable(Float64)) ENGINE = MergeTree() PARTITION BY partner ORDER BY id SETTINGS index_granularity = 8192
+
+
+ "YNYDZX","YNYDHW","JS_CMCC_CP","JS_CMCC_CP_ZX","HNYD","SD_CMCC_JN","LNYD","SAXYD"
+
+
+drop table if exists test.vodplay_datainput_test
+
+
+
+21328
+
+switch(fieldsTypeList[i-4].trim()){
+                case "Int":data[i]=new RandomDataGenerator().nextInt(0, Integer.MAX_VALUE);
+                    break;
+                case "Long":data[i]=new RandomDataGenerator().nextLong(0, Long.MAX_VALUE);
+                    break;
+                case "Short":data[i]=1;
+                    break;
+                case "Byte":data[i]=1;
+                    break;
+                case "String":data[i]= RandomStringUtils.randomAlphanumeric(new Random().nextInt(100));
+                    break;
+                case "Float":data[i]=1.0;
+                    break;
+                case "Double":data[i]= RandomUtils.nextDouble(0, 100000000);
+                    break;
+                 default:
+                     data[i]=1;
+                    break;
+            }
+
+259
+150
+
+java  -jar -Xmx35G  clickhouseclient_api_test4.jar  test.vodplay_datainput_test 500000
+<http_server_default_response> <！[CDATA [<html ng-app =“SMI2”> <head> <base href =“http://ui.tabix.io/”> </ head> <body> <div ui-view =“”class =“content-ui”> </ div> <script src =“http://loader.tabix.io/master.js”> </ script> </ body> </ html>]]> </ http_server_default_response>
+
+<http_server_default_response><![CDATA[<html ng-app="SMI2"><head><base href="http://ui.tabix.io/"></head><body><div ui-view="" class="content-ui"></div><script src="http://loader.tabix.io/master.js"></script></body></html>]]></http_server_default_response>
+
+
+
+java  -jar -Xmx35G  clickhouseclient_api_test5.jar  test.vodplay_datainput_test 2
+
+
+<cluster2>
+      <!-- 数据分片1  -->
+      <shard>
+        <replica>
+          <host>10.10.121.213</host>
+          <port>9000</port>
+        </replica>
+      </shard>
+      <!-- 数据分片2  -->
+      <shard>
+        <replica>
+          <host>10.10.130.100</host>
+          <port> 9000</port>
+        </replica>
+      </shard>
+      <!-- 数据分片3  -->
+      <shard>
+        <replica>
+          <host>10.10.130.101</host>
+          <port> 9000</port>
+        </replica>
+      </shard>
+      <!-- 数据分片4  -->
+      <shard>
+        <replica>
+          <host>10.10.130.6</host>
+          <port> 9000</port>
+        </replica>
+      </shard>
+      <!-- 数据分片5  -->
+      <shard>
+        <replica>
+          <host>10.10.130.7</host>
+          <port> 9000</port>
+        </replica>
+      </shard>
+      <!-- 数据分片6  -->
+      <shard>
+        <replica>
+          <host>10.10.130.8</host>
+          <port> 9000</port>
+        </replica>
+      </shard>
+    </cluster2>
+
+
+
+
+
+ CREATE TABLE IF NOT EXISTS test.vodplay_datain ON CLUSTER cluster2 ( id Int64,  partner String,  time String,  mac String,  knyx Nullable(String),  wtksbbw Nullable(String),  bdufbzes Nullable(String),  ovvwf Nullable(String),  clfgy Nullable(String),  cpvbymo Nullable(String),  rpum Nullable(String),  vrvdl Nullable(String),  jahwv Nullable(String),  nkqiq Nullable(String),  gvcp Nullable(String),  cfqrm Nullable(String),  pgqgm Nullable(String),  ltsr Nullable(String),  jbyk Nullable(String),  ulhsjkar Nullable(String),  oump Nullable(String),  drabtpf Nullable(String),  obkmxfj Nullable(String),  olsec Nullable(String),  gafop Nullable(String),  tgamugqd Nullable(String),  pxcrl Nullable(String),  ihhblvki Nullable(String),  eposmeid Nullable(String),  xcfy Nullable(String),  knpuw Nullable(String),  zxrhnr Nullable(String),  mpueilc Nullable(String),  pkzn Nullable(String),  fcrntn Nullable(String),  yfbsvju Nullable(String),  engytdz Nullable(String),  ilfql Nullable(String),  kdefi Nullable(String),  ixdvl Nullable(String),  dqpxv Nullable(String),  fvprz Nullable(String),  ysuwkc Nullable(String),  npet Nullable(String),  xgbx Nullable(String),  omqqie Nullable(String),  blnns Nullable(String),  duhfwtyr Nullable(String),  geaso Nullable(String),  whcat Nullable(String),  fvbutg Nullable(String),  hius Nullable(String),  pnmka Nullable(String),  lezkos Nullable(String),  snyudwnh Nullable(String),  nlecv Nullable(String),  cqdslm Nullable(String),  gbonb Nullable(String),  kpdp Nullable(String),  encunh Nullable(String),  qpjajs Nullable(String),  kjnu Nullable(String),  gofsh Nullable(String),  licc Nullable(String),  jozci Nullable(String),  iteinbgi Nullable(String),  xefus Nullable(String),  ffpmn Nullable(String),  yhvrkxh Nullable(String),  cxwixbw Nullable(String),  qcezs Nullable(String),  znnxajr Nullable(String),  ssfuves Nullable(String),  pfane Nullable(String),  kolssld Nullable(String),  yykb Nullable(String),  xlnxgk Nullable(String),  anycirye Nullable(String),  mabop Nullable(String),  dytje Nullable(String),  gmoamj Nullable(String),  yyzldc Nullable(String),  pixynyqc Nullable(String),  hkbiyuk Nullable(String),  xikdpdb Nullable(String),  lnyfovb Nullable(String),  cgtljdt Nullable(String),  asootylx Nullable(String),  ohkkew Nullable(String),  qjeafhfi Nullable(String),  ueifpuv Nullable(String),  osqruuv Nullable(String),  ikepfqx Nullable(String),  kqavit Nullable(String),  alhvbuxh Nullable(String),  eqpksv Nullable(String),  objdyxb Nullable(String),  ycnqnsf Nullable(String),  vivcm Nullable(String),  bltlu Nullable(String),  yzpfkuaw Nullable(String),  fdrusdj Nullable(String),  iqmisreb Nullable(String),  ekachmy Nullable(String),  fvux Nullable(String),  wexc Nullable(String),  tifi Nullable(String),  kmkvzwhk Nullable(String),  arnvd Nullable(String),  dfnwefa Nullable(String),  lsluyqx Nullable(String),  mppfatl Nullable(String),  hibxlso Nullable(String),  pgyclo Nullable(String),  kxout Nullable(String),  qbuqek Nullable(String),  jqlppib Nullable(String),  ebneux Nullable(String),  uwpxwcq Nullable(String),  fxavxem Nullable(String),  bcxcj Nullable(String),  btmlcmy Nullable(String),  piewv Nullable(String),  ollcfn Nullable(String),  vpmgfeqo Nullable(String),  dtdgchw Nullable(String),  ctjim Nullable(String),  wudyfaq Nullable(String),  tmiggfm Nullable(String),  xjyui Nullable(String),  rcbzylb Nullable(String),  rcvbmn Nullable(String),  ifvbw Nullable(String),  ofmf Nullable(String),  rlsmeu Nullable(String),  tmcytojh Nullable(String),  yclxfmdu Nullable(String),  idqm Nullable(String),  wqnkfqd Nullable(String),  buolnqrx Nullable(String),  bdrlo Nullable(String),  rdysaj Nullable(String),  khrjnim Nullable(String),  hsqoqh Nullable(String),  ppvhwckb Nullable(String),  nmhyw Nullable(String),  gnmlxcy Nullable(String),  dxjkowmz Nullable(String),  nmtogu Nullable(String),  jvdpsfh Nullable(String),  dhbpcmg Nullable(String),  jxoqn Nullable(String),  sfvafw Nullable(String),  rplsjou Nullable(String),  ovxqwt Nullable(String),  fwhitp Nullable(String),  socvpeb Nullable(String),  tvrbaa Nullable(String),  ppcwm Nullable(String),  cjdsddy Nullable(String),  muqkgj Nullable(String),  zqmklgxr Nullable(String),  hixyy Nullable(String),  rvajwqr Nullable(String),  xtswutn Nullable(String),  exjgenmc Nullable(String),  nyse Nullable(String),  djblh Nullable(String),  uevuse Nullable(String),  xoox Nullable(String),  lyggl Nullable(String),  wwexa Nullable(String),  wwmym Nullable(String),  jccpf Nullable(String),  ksmf Nullable(String),  giozpt Nullable(String),  vbsiw Nullable(String),  sqyrqwb Nullable(String),  gbwso Nullable(String),  apiiefn Nullable(String),  fftgtbqe Nullable(String),  fbtu Nullable(String),  ndkycpp Nullable(String),  bggjub Nullable(String),  fnjmqtb Nullable(String),  ygjkrq Nullable(String),  xqmyew Nullable(String),  uprlwcw Nullable(String),  jcthlp Nullable(String),  rikvk Nullable(String),  bumtkv Nullable(String),  cpivhf Nullable(String),  nmwrv Nullable(String),  hemnw Nullable(String),  niwybv Nullable(String),  fqlf Nullable(String),  gfobbvf Nullable(String),  owqmfkz Nullable(String),  jzbmf Nullable(String),  nkvkq Nullable(String),  ryvxpsk Nullable(String),  ycgsjpv Nullable(String),  wkylo Nullable(String),  orwopzl Nullable(String),  vtiyf Nullable(String),  hsqryov Nullable(String),  olbky Nullable(String),  pejsq Nullable(String),  mibt Nullable(String),  qmiiynu Nullable(String),  cxebtsk Nullable(String),  kkim Nullable(String),  uyjcger Nullable(String),  bjrkooc Nullable(String),  bsbf Nullable(String),  njvbqj Nullable(String),  euvw Nullable(String),  msejfb Nullable(String),  gxrtwfhm Nullable(String),  udcbl Nullable(String),  emryhhn Nullable(String),  njfwhvj Nullable(String),  wmauv Nullable(String),  bmccx Nullable(String),  jhqev Nullable(String),  ktgjdzc Nullable(String),  sglys Nullable(String),  bsepkhxm Nullable(String),  yxgnfsr Nullable(String),  hocpi Nullable(String),  sebwati Nullable(String),  ppfvjih Nullable(String),  ydwm Nullable(String),  fmka Nullable(String),  xfooceb Nullable(String),  inimqzxx Nullable(String),  huuotjt Nullable(String),  tmhirnol Nullable(String),  rueif Nullable(String),  htjsytj Nullable(String),  cdojktzo Nullable(String),  vkjd Nullable(String),  zukkfmfe Nullable(String),  tpbvvfs Nullable(String),  jvpkvgnm Nullable(String),  rwgivjl Nullable(String),  qgoblfi Nullable(String),  phsbdryl Nullable(String),  uycjyj Nullable(String),  pvvhpdd Nullable(String),  qmuxfbv Nullable(String),  vjxiyev Nullable(String),  srhexyh Nullable(String),  bifsnwn Nullable(String),  ktni Nullable(String),  eqvxytd Nullable(String),  bngmykk Nullable(String),  vrrqpt Nullable(String),  kifjk Nullable(String),  ahikr Nullable(String),  dkfqbo Nullable(String),  khjmv Nullable(String),  mmnwfmh Nullable(String),  fksquw Nullable(Int32),  bxvdh Nullable(Int32),  hsiiynk Nullable(Int32),  qfhijyxm Nullable(Int32),  tbfaj Nullable(Int32),  xdwhlvk Nullable(Int32),  xahtmj Nullable(Int32),  umqnzdf Nullable(Int32),  dieovuc Nullable(Int32),  vqbs Nullable(Int32),  iafinjq Nullable(Int32),  cgckqjh Nullable(Int32),  jpcikn Nullable(Int32),  gzjorn Nullable(Int32),  cblexop Nullable(Int32),  rcejtw Nullable(Int32),  ujwbyumh Nullable(Int32),  yrbofo Nullable(Int32),  epveksq Nullable(Int32),  uvmv Nullable(Int32),  rcrng Nullable(Int32),  vqpjqgc Nullable(Int32),  rkibu Nullable(Int32),  ffzkpjd Nullable(Int32),  wdyoecf Nullable(Int32),  ulwuwq Nullable(Int32),  lflcld Nullable(Int32),  oclhyco Nullable(Int32),  phizml Nullable(Int32),  wrhe Nullable(Int32),  zjbxhzu Nullable(Int32),  ubyoqpm Nullable(Int32),  cjhbzbxm Nullable(Int32),  qxtpgv Nullable(Int32),  quwg Nullable(Int32),  hfgakaf Nullable(Int32),  lrqewsp Nullable(Int32),  lsjst Nullable(Int32),  uraiutx Nullable(Int32),  vntipr Nullable(Int32),  dyoxzeg Nullable(Int32),  augps Nullable(Int32),  yvoo Nullable(Int32),  ggwxgn Nullable(Int32),  blnkrsqs Nullable(Int32),  rsputdx Nullable(Int32),  hhhrv Nullable(Int32),  pkul Nullable(Int32),  hzrf Nullable(Int32),  nyzqznw Nullable(Int32),  hagks Nullable(Int32),  dfxx Nullable(Int32),  fpnec Nullable(Int32),  sdvl Nullable(Int32),  xhpwscq Nullable(Int32),  ejawl Nullable(Int32),  arnlkuks Nullable(Int32),  dbfgg Nullable(Int32),  xfrgfx Nullable(Int32),  hdluvyvv Nullable(Int32),  evzsyew Nullable(Int32),  qnnxr Nullable(Int32),  trijht Nullable(Int32),  ivzlwx Nullable(Int32),  rdxjmbu Nullable(Int32),  cghpqu Nullable(Int32),  qwriiip Nullable(Int32),  pnnsx Nullable(Int32),  jnhnb Nullable(Int32),  nlmkbrdc Nullable(Int32),  lxkypp Nullable(Int32),  qwcpu Nullable(Int32),  vjeb Nullable(Int32),  nwpmijqt Nullable(Int32),  yiqdv Nullable(Int32),  wvuhn Nullable(Int32),  dsle Nullable(Int32),  hxcvk Nullable(Int32),  ddxte Nullable(Int32),  vjtae Nullable(Int32),  ldgcxspl Nullable(Int32),  qqzqrd Nullable(Int32),  mrgsro Nullable(Int32),  svszss Nullable(Int32),  tmmdvq Nullable(Int32),  pkjuvvtn Nullable(Int32),  runjjsya Nullable(Int32),  vhvln Nullable(Int32),  fndvo Nullable(Int32),  wmpdcjy Nullable(Int32),  ptwe Nullable(Int32),  refomn Nullable(Int32),  mjtktet Nullable(Int32),  smni Nullable(Int32),  pyugee Nullable(Int32),  llxjjwcm Nullable(Int32),  yfduns Nullable(Int32),  gntqr Nullable(Int32),  ldfo Nullable(Int32),  bucms Nullable(Int32),  xvyggn Nullable(Int32),  cqgfein Nullable(Int32),  cmmky Nullable(Int32),  vlwdg Nullable(Int32),  tlst Nullable(Int32),  fkqpt Nullable(Int32),  hwbcik Nullable(Int32),  rwnictpi Nullable(Int32),  eezczruy Nullable(Int32),  ygpcgimx Nullable(Int32),  becm Nullable(Int32),  vgdmewl Nullable(Int32),  gidz Nullable(Int32),  fxnbu Nullable(Int32),  xbzxze Nullable(Int32),  mscxvj Nullable(Int32),  xvcgrn Nullable(Int32),  dsxhvn Nullable(Int32),  hxtru Nullable(Int32),  bmvjv Nullable(Int32),  qpuh Nullable(Int32),  rtflqb Nullable(Int32),  zhjivqg Nullable(Int32),  ovebt Nullable(Int32),  cghizojt Nullable(Int32),  vljrthr Nullable(Int32),  lurt Nullable(Int32),  pywq Nullable(Int32),  tylzu Nullable(Int32),  kdiwwjl Nullable(Int32),  noyisn Nullable(Int32),  lusdgey Nullable(Int32),  qetwl Nullable(Int32),  dkxbiqm Nullable(Int32),  bzhkzf Nullable(Int32),  qwbfdr Nullable(Int32),  cyogm Nullable(Int32),  neqsjno Nullable(Int32),  ygvli Nullable(Int32),  jjknydiy Nullable(Int32),  kxmv Nullable(Int32),  qdhmg Nullable(Int32),  jcizo Nullable(Int32),  ezofil Nullable(Int32),  jhvm Nullable(Int32),  eplzilu Nullable(Int32),  wijj Nullable(Int32),  sbqhbtg Nullable(Int32),  shjof Nullable(Int32),  buipxul Nullable(Int32),  qjjsu Nullable(Int64),  xaclgd Nullable(Int64),  tmxtyl Nullable(Int64),  migly Nullable(Int64),  mffpcxp Nullable(Int64),  qsqorlg Nullable(Float64),  dhljxoxd Nullable(Float64)) ENGINE = MergeTree() PARTITION BY partner ORDER BY id SETTINGS index_granularity = 8192
+
+CREATE TABLE test.vodplay_dist ON CLUSTER cluster2
+AS test.vodplay
+ENGINE = Distributed(cluster2, test, vodplay, rand())
+
+
+
+nohup java  -jar -Xmx40G  randomData.jar  test.vodplay  1000000 100 > ./console_output1 2>&1 &
+nohup java  -jar -Xmx40G  randomData.jar  test.vodplay  1000000 100 > ./console_output2 2>&1 &
+nohup java  -jar -Xmx40G  randomData.jar  test.vodplay  1000000 100 > ./console_output3 2>&1 &
+nohup java  -jar -Xmx40G  randomData.jar  test.vodplay  1000000 100 > ./console_output4 2>&1 &
+
+nohup java  -jar   clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output 2>&1 &
+
+
+
+
+
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output2 2>&1 &
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output3 2>&1 &
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output4 2>&1 &
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output5 2>&1 &
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output6 2>&1 &
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output7 2>&1 &
+nohup java  -jar -Xmx35G  clickhouseclient_api_test6.jar  test.vodplay  200 > ./console_output8 2>&1 &
+
+
+
+
+echo'performance'  | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+cat /sys/kernel/mm/transparent_hugepage/enabled
+
+
+sql1="INSERT INTO test.vodplay_datainput_test FORMAT CSVWithNames"
+cat /data1/data/clickhousedata/oneMillion.data | clickhouse-client --host=127.0.0.1 --port=9000 --database=test --query=${sql1} --input_format_allow_errors_num=100000
+
+
+sql1="INSERT INTO test.vodplay_datainput_test FORMAT CSVWithNames"
+cat /data1/data/clickhousedata/oneMillion.data | clickhouse-client --host=127.0.0.1 --port=9000 --database=test --query="INSERT INTO test.vodplay_datainput_test FORMAT CSVWithNames" --input_format_allow_errors_num=100000
+
+
+
+clickhouse-client --query='INSERT INTO table test.vodplay_datainput_test FORMAT CSVWithNames' < test.csv
+
+clickhouse-client --query='INSERT INTO table test.vodplay_datainput_test FORMAT CSVWithNames' < oneMillion.data
+
+
+sudo service clickhouse-server start
+
+
+sudo service clickhouse-server stop
+
+drop table if exists test.vodplay_datainput_test;
+
+select id,partner,time,mac  from vodplay_datainput_test where partner='JS_CMCC_CP_ZX' ;
+
+select id,partner,time,mac  from vodplay where partner='JS_CMCC_CP_ZX' ;
+
+select table, countDistinct(name) as num_cols,formatReadableSize(sum(data_compressed_bytes) as c) as comp,
+formatReadableSize(sum(data_uncompressed_bytes)as r) as raw,
+c/r as com_r
+from system.columns
+group by table
+order by raw desc
+
+
+
+
+10737418240
+
+
+
+CREATE TABLE IF NOT EXISTS test.vodplay_datainput_test  ( id Int64,  partner String,  time String,  mac String,  knyx Nullable(String),  wtksbbw Nullable(String),  bdufbzes Nullable(String),  ovvwf Nullable(String),  clfgy Nullable(String),  cpvbymo Nullable(String),  rpum Nullable(String),  vrvdl Nullable(String),  jahwv Nullable(String),  nkqiq Nullable(String),  gvcp Nullable(String),  cfqrm Nullable(String),  pgqgm Nullable(String),  ltsr Nullable(String),  jbyk Nullable(String),  ulhsjkar Nullable(String),  oump Nullable(String),  drabtpf Nullable(String),  obkmxfj Nullable(String),  olsec Nullable(String),  gafop Nullable(String),  tgamugqd Nullable(String),  pxcrl Nullable(String),  ihhblvki Nullable(String),  eposmeid Nullable(String),  xcfy Nullable(String),  knpuw Nullable(String),  zxrhnr Nullable(String),  mpueilc Nullable(String),  pkzn Nullable(String),  fcrntn Nullable(String),  yfbsvju Nullable(String),  engytdz Nullable(String),  ilfql Nullable(String),  kdefi Nullable(String),  ixdvl Nullable(String),  dqpxv Nullable(String),  fvprz Nullable(String),  ysuwkc Nullable(String),  npet Nullable(String),  xgbx Nullable(String),  omqqie Nullable(String),  blnns Nullable(String),  duhfwtyr Nullable(String),  geaso Nullable(String),  whcat Nullable(String),  fvbutg Nullable(String),  hius Nullable(String),  pnmka Nullable(String),  lezkos Nullable(String),  snyudwnh Nullable(String),  nlecv Nullable(String),  cqdslm Nullable(String),  gbonb Nullable(String),  kpdp Nullable(String),  encunh Nullable(String),  qpjajs Nullable(String),  kjnu Nullable(String),  gofsh Nullable(String),  licc Nullable(String),  jozci Nullable(String),  iteinbgi Nullable(String),  xefus Nullable(String),  ffpmn Nullable(String),  yhvrkxh Nullable(String),  cxwixbw Nullable(String),  qcezs Nullable(String),  znnxajr Nullable(String),  ssfuves Nullable(String),  pfane Nullable(String),  kolssld Nullable(String),  yykb Nullable(String),  xlnxgk Nullable(String),  anycirye Nullable(String),  mabop Nullable(String),  dytje Nullable(String),  gmoamj Nullable(String),  yyzldc Nullable(String),  pixynyqc Nullable(String),  hkbiyuk Nullable(String),  xikdpdb Nullable(String),  lnyfovb Nullable(String),  cgtljdt Nullable(String),  asootylx Nullable(String),  ohkkew Nullable(String),  qjeafhfi Nullable(String),  ueifpuv Nullable(String),  osqruuv Nullable(String),  ikepfqx Nullable(String),  kqavit Nullable(String),  alhvbuxh Nullable(String),  eqpksv Nullable(String),  objdyxb Nullable(String),  ycnqnsf Nullable(String),  vivcm Nullable(String),  bltlu Nullable(String),  yzpfkuaw Nullable(String),  fdrusdj Nullable(String),  iqmisreb Nullable(String),  ekachmy Nullable(String),  fvux Nullable(String),  wexc Nullable(String),  tifi Nullable(String),  kmkvzwhk Nullable(String),  arnvd Nullable(String),  dfnwefa Nullable(String),  lsluyqx Nullable(String),  mppfatl Nullable(String),  hibxlso Nullable(String),  pgyclo Nullable(String),  kxout Nullable(String),  qbuqek Nullable(String),  jqlppib Nullable(String),  ebneux Nullable(String),  uwpxwcq Nullable(String),  fxavxem Nullable(String),  bcxcj Nullable(String),  btmlcmy Nullable(String),  piewv Nullable(String),  ollcfn Nullable(String),  vpmgfeqo Nullable(String),  dtdgchw Nullable(String),  ctjim Nullable(String),  wudyfaq Nullable(String),  tmiggfm Nullable(String),  xjyui Nullable(String),  rcbzylb Nullable(String),  rcvbmn Nullable(String),  ifvbw Nullable(String),  ofmf Nullable(String),  rlsmeu Nullable(String),  tmcytojh Nullable(String),  yclxfmdu Nullable(String),  idqm Nullable(String),  wqnkfqd Nullable(String),  buolnqrx Nullable(String),  bdrlo Nullable(String),  rdysaj Nullable(String),  khrjnim Nullable(String),  hsqoqh Nullable(String),  ppvhwckb Nullable(String),  nmhyw Nullable(String),  gnmlxcy Nullable(String),  dxjkowmz Nullable(String),  nmtogu Nullable(String),  jvdpsfh Nullable(String),  dhbpcmg Nullable(String),  jxoqn Nullable(String),  sfvafw Nullable(String),  rplsjou Nullable(String),  ovxqwt Nullable(String),  fwhitp Nullable(String),  socvpeb Nullable(String),  tvrbaa Nullable(String),  ppcwm Nullable(String),  cjdsddy Nullable(String),  muqkgj Nullable(String),  zqmklgxr Nullable(String),  hixyy Nullable(String),  rvajwqr Nullable(String),  xtswutn Nullable(String),  exjgenmc Nullable(String),  nyse Nullable(String),  djblh Nullable(String),  uevuse Nullable(String),  xoox Nullable(String),  lyggl Nullable(String),  wwexa Nullable(String),  wwmym Nullable(String),  jccpf Nullable(String),  ksmf Nullable(String),  giozpt Nullable(String),  vbsiw Nullable(String),  sqyrqwb Nullable(String),  gbwso Nullable(String),  apiiefn Nullable(String),  fftgtbqe Nullable(String),  fbtu Nullable(String),  ndkycpp Nullable(String),  bggjub Nullable(String),  fnjmqtb Nullable(String),  ygjkrq Nullable(String),  xqmyew Nullable(String),  uprlwcw Nullable(String),  jcthlp Nullable(String),  rikvk Nullable(String),  bumtkv Nullable(String),  cpivhf Nullable(String),  nmwrv Nullable(String),  hemnw Nullable(String),  niwybv Nullable(String),  fqlf Nullable(String),  gfobbvf Nullable(String),  owqmfkz Nullable(String),  jzbmf Nullable(String),  nkvkq Nullable(String),  ryvxpsk Nullable(String),  ycgsjpv Nullable(String),  wkylo Nullable(String),  orwopzl Nullable(String),  vtiyf Nullable(String),  hsqryov Nullable(String),  olbky Nullable(String),  pejsq Nullable(String),  mibt Nullable(String),  qmiiynu Nullable(String),  cxebtsk Nullable(String),  kkim Nullable(String),  uyjcger Nullable(String),  bjrkooc Nullable(String),  bsbf Nullable(String),  njvbqj Nullable(String),  euvw Nullable(String),  msejfb Nullable(String),  gxrtwfhm Nullable(String),  udcbl Nullable(String),  emryhhn Nullable(String),  njfwhvj Nullable(String),  wmauv Nullable(String),  bmccx Nullable(String),  jhqev Nullable(String),  ktgjdzc Nullable(String),  sglys Nullable(String),  bsepkhxm Nullable(String),  yxgnfsr Nullable(String),  hocpi Nullable(String),  sebwati Nullable(String),  ppfvjih Nullable(String),  ydwm Nullable(String),  fmka Nullable(String),  xfooceb Nullable(String),  inimqzxx Nullable(String),  huuotjt Nullable(String),  tmhirnol Nullable(String),  rueif Nullable(String),  htjsytj Nullable(String),  cdojktzo Nullable(String),  vkjd Nullable(String),  zukkfmfe Nullable(String),  tpbvvfs Nullable(String),  jvpkvgnm Nullable(String),  rwgivjl Nullable(String),  qgoblfi Nullable(String),  phsbdryl Nullable(String),  uycjyj Nullable(String),  pvvhpdd Nullable(String),  qmuxfbv Nullable(String),  vjxiyev Nullable(String),  srhexyh Nullable(String),  bifsnwn Nullable(String),  ktni Nullable(String),  eqvxytd Nullable(String),  bngmykk Nullable(String),  vrrqpt Nullable(String),  kifjk Nullable(String),  ahikr Nullable(String),  dkfqbo Nullable(String),  khjmv Nullable(String),  mmnwfmh Nullable(String),  fksquw Nullable(Int32),  bxvdh Nullable(Int32),  hsiiynk Nullable(Int32),  qfhijyxm Nullable(Int32),  tbfaj Nullable(Int32),  xdwhlvk Nullable(Int32),  xahtmj Nullable(Int32),  umqnzdf Nullable(Int32),  dieovuc Nullable(Int32),  vqbs Nullable(Int32),  iafinjq Nullable(Int32),  cgckqjh Nullable(Int32),  jpcikn Nullable(Int32),  gzjorn Nullable(Int32),  cblexop Nullable(Int32),  rcejtw Nullable(Int32),  ujwbyumh Nullable(Int32),  yrbofo Nullable(Int32),  epveksq Nullable(Int32),  uvmv Nullable(Int32),  rcrng Nullable(Int32),  vqpjqgc Nullable(Int32),  rkibu Nullable(Int32),  ffzkpjd Nullable(Int32),  wdyoecf Nullable(Int32),  ulwuwq Nullable(Int32),  lflcld Nullable(Int32),  oclhyco Nullable(Int32),  phizml Nullable(Int32),  wrhe Nullable(Int32),  zjbxhzu Nullable(Int32),  ubyoqpm Nullable(Int32),  cjhbzbxm Nullable(Int32),  qxtpgv Nullable(Int32),  quwg Nullable(Int32),  hfgakaf Nullable(Int32),  lrqewsp Nullable(Int32),  lsjst Nullable(Int32),  uraiutx Nullable(Int32),  vntipr Nullable(Int32),  dyoxzeg Nullable(Int32),  augps Nullable(Int32),  yvoo Nullable(Int32),  ggwxgn Nullable(Int32),  blnkrsqs Nullable(Int32),  rsputdx Nullable(Int32),  hhhrv Nullable(Int32),  pkul Nullable(Int32),  hzrf Nullable(Int32),  nyzqznw Nullable(Int32),  hagks Nullable(Int32),  dfxx Nullable(Int32),  fpnec Nullable(Int32),  sdvl Nullable(Int32),  xhpwscq Nullable(Int32),  ejawl Nullable(Int32),  arnlkuks Nullable(Int32),  dbfgg Nullable(Int32),  xfrgfx Nullable(Int32),  hdluvyvv Nullable(Int32),  evzsyew Nullable(Int32),  qnnxr Nullable(Int32),  trijht Nullable(Int32),  ivzlwx Nullable(Int32),  rdxjmbu Nullable(Int32),  cghpqu Nullable(Int32),  qwriiip Nullable(Int32),  pnnsx Nullable(Int32),  jnhnb Nullable(Int32),  nlmkbrdc Nullable(Int32),  lxkypp Nullable(Int32),  qwcpu Nullable(Int32),  vjeb Nullable(Int32),  nwpmijqt Nullable(Int32),  yiqdv Nullable(Int32),  wvuhn Nullable(Int32),  dsle Nullable(Int32),  hxcvk Nullable(Int32),  ddxte Nullable(Int32),  vjtae Nullable(Int32),  ldgcxspl Nullable(Int32),  qqzqrd Nullable(Int32),  mrgsro Nullable(Int32),  svszss Nullable(Int32),  tmmdvq Nullable(Int32),  pkjuvvtn Nullable(Int32),  runjjsya Nullable(Int32),  vhvln Nullable(Int32),  fndvo Nullable(Int32),  wmpdcjy Nullable(Int32),  ptwe Nullable(Int32),  refomn Nullable(Int32),  mjtktet Nullable(Int32),  smni Nullable(Int32),  pyugee Nullable(Int32),  llxjjwcm Nullable(Int32),  yfduns Nullable(Int32),  gntqr Nullable(Int32),  ldfo Nullable(Int32),  bucms Nullable(Int32),  xvyggn Nullable(Int32),  cqgfein Nullable(Int32),  cmmky Nullable(Int32),  vlwdg Nullable(Int32),  tlst Nullable(Int32),  fkqpt Nullable(Int32),  hwbcik Nullable(Int32),  rwnictpi Nullable(Int32),  eezczruy Nullable(Int32),  ygpcgimx Nullable(Int32),  becm Nullable(Int32),  vgdmewl Nullable(Int32),  gidz Nullable(Int32),  fxnbu Nullable(Int32),  xbzxze Nullable(Int32),  mscxvj Nullable(Int32),  xvcgrn Nullable(Int32),  dsxhvn Nullable(Int32),  hxtru Nullable(Int32),  bmvjv Nullable(Int32),  qpuh Nullable(Int32),  rtflqb Nullable(Int32),  zhjivqg Nullable(Int32),  ovebt Nullable(Int32),  cghizojt Nullable(Int32),  vljrthr Nullable(Int32),  lurt Nullable(Int32),  pywq Nullable(Int32),  tylzu Nullable(Int32),  kdiwwjl Nullable(Int32),  noyisn Nullable(Int32),  lusdgey Nullable(Int32),  qetwl Nullable(Int32),  dkxbiqm Nullable(Int32),  bzhkzf Nullable(Int32),  qwbfdr Nullable(Int32),  cyogm Nullable(Int32),  neqsjno Nullable(Int32),  ygvli Nullable(Int32),  jjknydiy Nullable(Int32),  kxmv Nullable(Int32),  qdhmg Nullable(Int32),  jcizo Nullable(Int32),  ezofil Nullable(Int32),  jhvm Nullable(Int32),  eplzilu Nullable(Int32),  wijj Nullable(Int32),  sbqhbtg Nullable(Int32),  shjof Nullable(Int32),  buipxul Nullable(Int32),  qjjsu Nullable(Int64),  xaclgd Nullable(Int64),  tmxtyl Nullable(Int64),  migly Nullable(Int64),  mffpcxp Nullable(Int64),  qsqorlg Nullable(Float64),  dhljxoxd Nullable(Float64)) ENGINE = MergeTree() PARTITION BY time ORDER BY (id,partner) SETTINGS index_granularity = 8192
+
+
+
+CREATE TABLE IF NOT EXISTS test.notnull_test ( id Int64,  partner String,  time String,  mac String,  knyx String,  wtksbbw String,  bdufbzes String,  ovvwf String,  clfgy String,  cpvbymo String,  rpum String,  vrvdl String,  jahwv String,  nkqiq String,  gvcp String,  cfqrm String,  pgqgm String,  ltsr String,  jbyk String,  ulhsjkar String,  oump String,  drabtpf String,  obkmxfj String,  olsec String,  gafop String,  tgamugqd String,  pxcrl String,  ihhblvki String,  eposmeid String,  xcfy String,  knpuw String,  zxrhnr String,  mpueilc String,  pkzn String,  fcrntn String,  yfbsvju String,  engytdz String,  ilfql String,  kdefi String,  ixdvl String,  dqpxv String,  fvprz String,  ysuwkc String,  npet String,  xgbx String,  omqqie String,  blnns String,  duhfwtyr String,  geaso String,  whcat String,  fvbutg String,  hius String,  pnmka String,  lezkos String,  snyudwnh String,  nlecv String,  cqdslm String,  gbonb String,  kpdp String,  encunh String,  qpjajs String,  kjnu String,  gofsh String,  licc String,  jozci String,  iteinbgi String,  xefus String,  ffpmn String,  yhvrkxh String,  cxwixbw String,  qcezs String,  znnxajr String,  ssfuves String,  pfane String,  kolssld String,  yykb String,  xlnxgk String,  anycirye String,  mabop String,  dytje String,  gmoamj String,  yyzldc String,  pixynyqc String,  hkbiyuk String,  xikdpdb String,  lnyfovb String,  cgtljdt String,  asootylx String,  ohkkew String,  qjeafhfi String,  ueifpuv String,  osqruuv String,  ikepfqx String,  kqavit String,  alhvbuxh String,  eqpksv String,  objdyxb String,  ycnqnsf String,  vivcm String,  bltlu String,  yzpfkuaw String,  fdrusdj String,  iqmisreb String,  ekachmy String,  fvux String,  wexc String,  tifi String,  kmkvzwhk String,  arnvd String,  dfnwefa String,  lsluyqx String,  mppfatl String,  hibxlso String,  pgyclo String,  kxout String,  qbuqek String,  jqlppib String,  ebneux String,  uwpxwcq String,  fxavxem String,  bcxcj String,  btmlcmy String,  piewv String,  ollcfn String,  vpmgfeqo String,  dtdgchw String,  ctjim String,  wudyfaq String,  tmiggfm String,  xjyui String,  rcbzylb String,  rcvbmn String,  ifvbw String,  ofmf String,  rlsmeu String,  tmcytojh String,  yclxfmdu String,  idqm String,  wqnkfqd String,  buolnqrx String,  bdrlo String,  rdysaj String,  khrjnim String,  hsqoqh String,  ppvhwckb String,  nmhyw String,  gnmlxcy String,  dxjkowmz String,  nmtogu String,  jvdpsfh String,  dhbpcmg String,  jxoqn String,  sfvafw String,  rplsjou String,  ovxqwt String,  fwhitp String,  socvpeb String,  tvrbaa String,  ppcwm String,  cjdsddy String,  muqkgj String,  zqmklgxr String,  hixyy String,  rvajwqr String,  xtswutn String,  exjgenmc String,  nyse String,  djblh String,  uevuse String,  xoox String,  lyggl String,  wwexa String,  wwmym String,  jccpf String,  ksmf String,  giozpt String,  vbsiw String,  sqyrqwb String,  gbwso String,  apiiefn String,  fftgtbqe String,  fbtu String,  ndkycpp String,  bggjub String,  fnjmqtb String,  ygjkrq String,  xqmyew String,  uprlwcw String,  jcthlp String,  rikvk String,  bumtkv String,  cpivhf String,  nmwrv String,  hemnw String,  niwybv String,  fqlf String,  gfobbvf String,  owqmfkz String,  jzbmf String,  nkvkq String,  ryvxpsk String,  ycgsjpv String,  wkylo String,  orwopzl String,  vtiyf String,  hsqryov String,  olbky String,  pejsq String,  mibt String,  qmiiynu String,  cxebtsk String,  kkim String,  uyjcger String,  bjrkooc String,  bsbf String,  njvbqj String,  euvw String,  msejfb String,  gxrtwfhm String,  udcbl String,  emryhhn String,  njfwhvj String,  wmauv String,  bmccx String,  jhqev String,  ktgjdzc String,  sglys String,  bsepkhxm String,  yxgnfsr String,  hocpi String,  sebwati String,  ppfvjih String,  ydwm String,  fmka String,  xfooceb String,  inimqzxx String,  huuotjt String,  tmhirnol String,  rueif String,  htjsytj String,  cdojktzo String,  vkjd String,  zukkfmfe String,  tpbvvfs String,  jvpkvgnm String,  rwgivjl String,  qgoblfi String,  phsbdryl String,  uycjyj String,  pvvhpdd String,  qmuxfbv String,  vjxiyev String,  srhexyh String,  bifsnwn String,  ktni String,  eqvxytd String,  bngmykk String,  vrrqpt String,  kifjk String,  ahikr String,  dkfqbo String,  khjmv String,  mmnwfmh String,  fksquw Int32,  bxvdh Int32,  hsiiynk Int32,  qfhijyxm Int32,  tbfaj Int32,  xdwhlvk Int32,  xahtmj Int32,  umqnzdf Int32,  dieovuc Int32,  vqbs Int32,  iafinjq Int32,  cgckqjh Int32,  jpcikn Int32,  gzjorn Int32,  cblexop Int32,  rcejtw Int32,  ujwbyumh Int32,  yrbofo Int32,  epveksq Int32,  uvmv Int32,  rcrng Int32,  vqpjqgc Int32,  rkibu Int32,  ffzkpjd Int32,  wdyoecf Int32,  ulwuwq Int32,  lflcld Int32,  oclhyco Int32,  phizml Int32,  wrhe Int32,  zjbxhzu Int32,  ubyoqpm Int32,  cjhbzbxm Int32,  qxtpgv Int32,  quwg Int32,  hfgakaf Int32,  lrqewsp Int32,  lsjst Int32,  uraiutx Int32,  vntipr Int32,  dyoxzeg Int32,  augps Int32,  yvoo Int32,  ggwxgn Int32,  blnkrsqs Int32,  rsputdx Int32,  hhhrv Int32,  pkul Int32,  hzrf Int32,  nyzqznw Int32,  hagks Int32,  dfxx Int32,  fpnec Int32,  sdvl Int32,  xhpwscq Int32,  ejawl Int32,  arnlkuks Int32,  dbfgg Int32,  xfrgfx Int32,  hdluvyvv Int32,  evzsyew Int32,  qnnxr Int32,  trijht Int32,  ivzlwx Int32,  rdxjmbu Int32,  cghpqu Int32,  qwriiip Int32,  pnnsx Int32,  jnhnb Int32,  nlmkbrdc Int32,  lxkypp Int32,  qwcpu Int32,  vjeb Int32,  nwpmijqt Int32,  yiqdv Int32,  wvuhn Int32,  dsle Int32,  hxcvk Int32,  ddxte Int32,  vjtae Int32,  ldgcxspl Int32,  qqzqrd Int32,  mrgsro Int32,  svszss Int32,  tmmdvq Int32,  pkjuvvtn Int32,  runjjsya Int32,  vhvln Int32,  fndvo Int32,  wmpdcjy Int32,  ptwe Int32,  refomn Int32,  mjtktet Int32,  smni Int32,  pyugee Int32,  llxjjwcm Int32,  yfduns Int32,  gntqr Int32,  ldfo Int32,  bucms Int32,  xvyggn Int32,  cqgfein Int32,  cmmky Int32,  vlwdg Int32,  tlst Int32,  fkqpt Int32,  hwbcik Int32,  rwnictpi Int32,  eezczruy Int32,  ygpcgimx Int32,  becm Int32,  vgdmewl Int32,  gidz Int32,  fxnbu Int32,  xbzxze Int32,  mscxvj Int32,  xvcgrn Int32,  dsxhvn Int32,  hxtru Int32,  bmvjv Int32,  qpuh Int32,  rtflqb Int32,  zhjivqg Int32,  ovebt Int32,  cghizojt Int32,  vljrthr Int32,  lurt Int32,  pywq Int32,  tylzu Int32,  kdiwwjl Int32,  noyisn Int32,  lusdgey Int32,  qetwl Int32,  dkxbiqm Int32,  bzhkzf Int32,  qwbfdr Int32,  cyogm Int32,  neqsjno Int32,  ygvli Int32,  jjknydiy Int32,  kxmv Int32,  qdhmg Int32,  jcizo Int32,  ezofil Int32,  jhvm Int32,  eplzilu Int32,  wijj Int32,  sbqhbtg Int32,  shjof Int32,  buipxul Int32,  qjjsu Int64,  xaclgd Int64,  tmxtyl Int64,  migly Int64,  mffpcxp Int64,  qsqorlg Float64,  dhljxoxd Float64) ENGINE = MergeTree() PARTITION BY partner ORDER BY id SETTINGS index_granularity = 8192
+
+
+
+
+CREATE  TABLE IF NOT EXISTS `vodplay_hive2testpress`(
+   `logdate` Nullable(String),
+   `action` Nullable(Int32),
+   `mac` Nullable(String),
+   `logid` Nullable(String),
+   `productid` Nullable(Int32),
+   `ip` Nullable(String),
+   `pingbackversion` Nullable(String),
+   `clientversion` Nullable(String),
+   `appmark` Nullable(String),
+   `clienttime` Nullable(String),
+   `time` Nullable(String),
+   `albumid` Nullable(Int32),
+   `albumname` Nullable(String),
+   `videoid` Nullable(String),
+   `datarateid` Nullable(String),
+   `videoduration` Nullable(Int32),
+   `channelid` Nullable(Int32),
+   `channelname` Nullable(String),
+   `actionsrc` Nullable(Int32),
+   `actionsubsrcname` Nullable(String),
+   `contentsrcid` Nullable(Int32),
+   `videosrcid` Nullable(Int32),
+   `videoindex` Nullable(String),
+   `videotype` Nullable(Int32),
+   `topicid` Nullable(String),
+   `topicname` Nullable(String),
+   `position` Nullable(Int32),
+   `cdn` Nullable(String),
+   `playoffset` Nullable(Int32),
+   `x` Nullable(Int32),
+   `y` Nullable(Int32),
+   `videosrccdn` Nullable(String),
+   `useragent` Nullable(String),
+   `playduration` Nullable(Int32),
+   `clientplayduration` Nullable(Int32),
+   `userid` Nullable(String),
+   `resolution` Nullable(String),
+   `videoname` Nullable(String),
+   `continueplay` Nullable(Int32),
+   `processstarttime` Nullable(String),
+   `processendtime` Nullable(String),
+   `osversion` Nullable(String),
+   `srankingid` Nullable(Int32),
+   `srankingname` Nullable(String),
+   `playtype` Nullable(Int32),
+   `buffertype` Nullable(Int32),
+   `pauseduration` Nullable(Int32),
+   `bufferduration` Nullable(Int32),
+   `ls` Nullable(Int32),
+   `repair` Nullable(Int32),
+   `serialnumber` Nullable(String),
+   `searchkey` Nullable(String),
+   `searchtype` Nullable(String),
+   `tagid` Nullable(String),
+   `tagname` Nullable(String),
+   `orderopttype` Nullable(Int32),
+   `prodpackageid` Nullable(String),
+   `paytype` Nullable(Int32),
+   `payaccount` Nullable(String),
+   `result` Nullable(Int32),
+   `payposition` Nullable(String),
+   `videoprice` Nullable(Float64),
+   `actorname` Nullable(String),
+   `actorid` Nullable(String),
+   `recommendacttype` Nullable(String),
+   `upgrademode` Nullable(Int32),
+   `lastversion` Nullable(String),
+   `searchhit` Nullable(Int32),
+   `wallpaper` Nullable(String),
+   `keyboardtype` Nullable(Int32),
+   `modelid` Nullable(String),
+   `modelname` Nullable(String),
+   `exposedtagid` Nullable(String),
+   `oldversion` Nullable(String),
+   `bandwidth` Nullable(String),
+   `favortype` Nullable(Int32),
+   `rankingid` Nullable(Int32),
+   `rankingname` Nullable(String),
+   `voicecommand` Nullable(String),
+   `searchmode` Nullable(Int32),
+   `favormode` Nullable(Int32),
+   `h5v` Nullable(String),
+   `pageid` Nullable(String),
+   `pagename` Nullable(String),
+   `pagetype` Nullable(String),
+   `entrytype` Nullable(Int32),
+   `termtype` Nullable(Int32),
+   `h5optid` Nullable(String),
+   `h5optname` Nullable(String),
+   `qua` Nullable(Int32),
+   `win` Nullable(Int32),
+   `contentid` Nullable(String),
+   `contentname` Nullable(String),
+   `contenttype` Nullable(String),
+   `formal` Nullable(Int32),
+   `srctype` Nullable(Int32),
+   `lastpageid` Nullable(String),
+   `stbid` Nullable(String),
+   `hardwarevendorinfo` Nullable(String),
+   `areaname` Nullable(String),
+   `areaid` Nullable(String),
+   `areaorder` Nullable(Int32),
+   `timer` Nullable(Int32),
+   `clientserviceduration` Nullable(Int32),
+   `sspecextid` Nullable(String),
+   `stopicname` Nullable(String),
+   `sexposedtagid` Nullable(String),
+   `adsid` Nullable(String),
+   `adsn` Nullable(String),
+   `adss` Nullable(Int32),
+   `adid` Nullable(String),
+   `adn` Nullable(String),
+   `adt` Nullable(Int32),
+   `ado` Nullable(Int32),
+   `adsi` Nullable(Int32),
+   `sareaname` Nullable(String),
+   `sareaid` Nullable(String),
+   `sareaorder` Nullable(String),
+   `waterfallareatype` Nullable(Int32),
+   `swaterfallareatype` Nullable(Int32),
+   `exposedtagname` Nullable(String),
+   `sexposedtagname` Nullable(String),
+   `searchtagid` Nullable(String),
+   `searchtagname` Nullable(String),
+   `searchrelationkey` Nullable(String),
+   `waterfallpageid` Nullable(String),
+   `swaterfallpageid` Nullable(String),
+   `waterfallpagename` Nullable(String),
+   `swaterfallpagename` Nullable(String),
+   `waterfallchannelid` Nullable(String),
+   `swaterfallchannelid` Nullable(String),
+   `operatetype` Nullable(Int32),
+   `kwpos` Nullable(Int32),
+   `productsuitesname` Nullable(String),
+   `effectivetime` Nullable(String),
+   `unsubscribetype` Nullable(Int32),
+   `listtype` Nullable(Int32),
+   `salbumid` Nullable(Int32),
+   `salbumname` Nullable(String),
+   `schannelid` Nullable(Int32),
+   `scannelname` Nullable(String),
+   `swtagid` Nullable(String),
+   `swtagname` Nullable(String),
+   `ptrafficsources` Nullable(Int32),
+   `playrecordexp` Nullable(String),
+   `loop` Nullable(Int32),
+   `smodulecompid` Nullable(String),
+   `smodulecompname` Nullable(String),
+   `scontentid` Nullable(String),
+   `scontentname` Nullable(String),
+   `scontenttype` Nullable(Int32),
+   `prodpackagetype` Nullable(Int32),
+   `modeltype` Nullable(String),
+   `trigmode` Nullable(Int32),
+   `guideoperatecontent` Nullable(Int32),
+   `babynickname` Nullable(String),
+   `babysex` Nullable(String),
+   `babybirthdate` Nullable(String),
+   `durationonoffstate` Nullable(Int32),
+   `timeplayduration` Nullable(String),
+   `dayplayduration` Nullable(String),
+   `modulecompid` Nullable(String),
+   `modulecompname` Nullable(String),
+   `texttheme` Nullable(String),
+   `gototargettype` Nullable(Int32),
+   `parser_time` Nullable(String),
+   `ad_id_k` Nullable(String),
+   `ad_id_p` Nullable(String),
+   `ad_id_a` Nullable(String),
+   `ad_id_b` Nullable(String),
+   `ad_id_c` Nullable(String),
+   `smnp` Nullable(Int32),
+   `jfid` Nullable(String),
+   `jfx` Nullable(Int32),
+   `jfy` Nullable(Int32),
+   `jfsmn` Nullable(String),
+   `jfsmnid` Nullable(String),
+   `jfpos` Nullable(Int32),
+   `jfsmnp` Nullable(Int32),
+   `jfswi` Nullable(String),
+   `jfswn` Nullable(String),
+   `jfet` Nullable(Int32),
+   `adiid` Nullable(String),
+   `appscenarios` Nullable(Int32),
+   `phonenumber` Nullable(String),
+   `destpage` Nullable(Int32),
+   `destproductid` Nullable(String),
+   `but` Nullable(Int32),
+   `bui` Nullable(Int32),
+   `bun` Nullable(String),
+   `exposedalbum` Nullable(Int32),
+   `payphnumber` Nullable(String),
+   `sposidname` Nullable(String),
+   `sposidposition` Nullable(String),
+   `sposidversion` Nullable(String),
+   `sposidtype` Nullable(String),
+   `usersubmitinfo` Nullable(String),
+   `extpositionparams` Nullable(String),
+   `traceid` Nullable(String),
+   `remaining_num` Nullable(Int32),
+   `navi_position_name` Nullable(String),
+   `regional_position` Nullable(String),
+   `menu_type` Nullable(Int32),
+   `ad_material_id` Nullable(String),
+   `force_update` Nullable(Int32),
+   `play_screen_type` Nullable(Int32),
+  `user_type` Nullable(Int32),
+  `partialtype` String,
+   `partner`  String,
+  `day` String
+  )
+   ENGINE = MergeTree() PARTITION BY `partner`    ORDER BY (`partialtype`,`partner`,`day`) SETTINGS index_granularity = 8192
+
+
+clickhouse-client --query='INSERT INTO table test.vodplay_hive2testpress FORMAT CSVWithNames' < vodplay.csv
+
+
+* */5 * * * /data1/data/clickhousedata/random.sh
+
+
+
+https://clickhouse.yandex/docs/en/operations/server_settings/settings/
+
+
+<cluster3>
+            <!-- shard01 -->
+            <shard>
+                <!-- Optional. Shard weight when writing data. Default: 1. -->
+                <weight>1</weight>
+
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>10.10.130.101</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>10.10.130.6</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+
+            <!-- shard02 -->
+            <shard>
+                <weight>1</weight>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>10.10.130.7</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>10.10.130.8</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+
+</cluster3>
+
+
+
+<macros>
+    <layer>cluster3</layer>
+    <shard>shard01</shard>
+    <replica>10.10.130.101</replica>
+</macros>
+<macros>
+    <layer>cluster3</layer>
+    <shard>shard01</shard>
+    <replica>10.10.130.6</replica>
+</macros>
+
+<macros>
+    <layer>cluster3</layer>
+    <shard>shard02</shard>
+    <replica>10.10.130.7</replica>
+</macros>
+<macros>
+    <layer>cluster3</layer>
+    <shard>shard02</shard>
+    <replica>10.10.130.8</replica>
+</macros>
+
+
+
+CREATE TABLE IF NOT EXISTS test.vodplay_replica ON CLUSTER cluster3
+ ( id Int64,  partner String,  time String,  mac String,  knyx String,  wtksbbw String,  bdufbzes String,  ovvwf String,  clfgy String,  cpvbymo String,  rpum String,  vrvdl String,  jahwv String,  nkqiq String,  gvcp String,  cfqrm String,  pgqgm String,  ltsr String,  jbyk String,  ulhsjkar String,  oump String,  drabtpf String,  obkmxfj String,  olsec String,  gafop String,  tgamugqd String,  pxcrl String,  ihhblvki String,  eposmeid String,  xcfy String,  knpuw String,  zxrhnr String,  mpueilc String,  pkzn String,  fcrntn String,  yfbsvju String,  engytdz String,  ilfql String,  kdefi String,  ixdvl String,  dqpxv String,  fvprz String,  ysuwkc String,  npet String,  xgbx String,  omqqie String,  blnns String,  duhfwtyr String,  geaso String,  whcat String,  fvbutg String,  hius String,  pnmka String,  lezkos String,  snyudwnh String,  nlecv String,  cqdslm String,  gbonb String,  kpdp String,  encunh String,  qpjajs String,  kjnu String,  gofsh String,  licc String,  jozci String,  iteinbgi String,  xefus String,  ffpmn String,  yhvrkxh String,  cxwixbw String,  qcezs String,  znnxajr String,  ssfuves String,  pfane String,  kolssld String,  yykb String,  xlnxgk String,  anycirye String,  mabop String,  dytje String,  gmoamj String,  yyzldc String,  pixynyqc String,  hkbiyuk String,  xikdpdb String,  lnyfovb String,  cgtljdt String,  asootylx String,  ohkkew String,  qjeafhfi String,  ueifpuv String,  osqruuv String,  ikepfqx String,  kqavit String,  alhvbuxh String,  eqpksv String,  objdyxb String,  ycnqnsf String,  vivcm String,  bltlu String,  yzpfkuaw String,  fdrusdj String,  iqmisreb String,  ekachmy String,  fvux String,  wexc String,  tifi String,  kmkvzwhk String,  arnvd String,  dfnwefa String,  lsluyqx String,  mppfatl String,  hibxlso String,  pgyclo String,  kxout String,  qbuqek String,  jqlppib String,  ebneux String,  uwpxwcq String,  fxavxem String,  bcxcj String,  btmlcmy String,  piewv String,  ollcfn String,  vpmgfeqo String,  dtdgchw String,  ctjim String,  wudyfaq String,  tmiggfm String,  xjyui String,  rcbzylb String,  rcvbmn String,  ifvbw String,  ofmf String,  rlsmeu String,  tmcytojh String,  yclxfmdu String,  idqm String,  wqnkfqd String,  buolnqrx String,  bdrlo String,  rdysaj String,  khrjnim String,  hsqoqh String,  ppvhwckb String,  nmhyw String,  gnmlxcy String,  dxjkowmz String,  nmtogu String,  jvdpsfh String,  dhbpcmg String,  jxoqn String,  sfvafw String,  rplsjou String,  ovxqwt String,  fwhitp String,  socvpeb String,  tvrbaa String,  ppcwm String,  cjdsddy String,  muqkgj String,  zqmklgxr String,  hixyy String,  rvajwqr String,  xtswutn String,  exjgenmc String,  nyse String,  djblh String,  uevuse String,  xoox String,  lyggl String,  wwexa String,  wwmym String,  jccpf String,  ksmf String,  giozpt String,  vbsiw String,  sqyrqwb String,  gbwso String,  apiiefn String,  fftgtbqe String,  fbtu String,  ndkycpp String,  bggjub String,  fnjmqtb String,  ygjkrq String,  xqmyew String,  uprlwcw String,  jcthlp String,  rikvk String,  bumtkv String,  cpivhf String,  nmwrv String,  hemnw String,  niwybv String,  fqlf String,  gfobbvf String,  owqmfkz String,  jzbmf String,  nkvkq String,  ryvxpsk String,  ycgsjpv String,  wkylo String,  orwopzl String,  vtiyf String,  hsqryov String,  olbky String,  pejsq String,  mibt String,  qmiiynu String,  cxebtsk String,  kkim String,  uyjcger String,  bjrkooc String,  bsbf String,  njvbqj String,  euvw String,  msejfb String,  gxrtwfhm String,  udcbl String,  emryhhn String,  njfwhvj String,  wmauv String,  bmccx String,  jhqev String,  ktgjdzc String,  sglys String,  bsepkhxm String,  yxgnfsr String,  hocpi String,  sebwati String,  ppfvjih String,  ydwm String,  fmka String,  xfooceb String,  inimqzxx String,  huuotjt String,  tmhirnol String,  rueif String,  htjsytj String,  cdojktzo String,  vkjd String,  zukkfmfe String,  tpbvvfs String,  jvpkvgnm String,  rwgivjl String,  qgoblfi String,  phsbdryl String,  uycjyj String,  pvvhpdd String,  qmuxfbv String,  vjxiyev String,  srhexyh String,  bifsnwn String,  ktni String,  eqvxytd String,  bngmykk String,  vrrqpt String,  kifjk String,  ahikr String,  dkfqbo String,  khjmv String,  mmnwfmh String,  fksquw Int32,  bxvdh Int32,  hsiiynk Int32,  qfhijyxm Int32,  tbfaj Int32,  xdwhlvk Int32,  xahtmj Int32,  umqnzdf Int32,  dieovuc Int32,  vqbs Int32,  iafinjq Int32,  cgckqjh Int32,  jpcikn Int32,  gzjorn Int32,  cblexop Int32,  rcejtw Int32,  ujwbyumh Int32,  yrbofo Int32,  epveksq Int32,  uvmv Int32,  rcrng Int32,  vqpjqgc Int32,  rkibu Int32,  ffzkpjd Int32,  wdyoecf Int32,  ulwuwq Int32,  lflcld Int32,  oclhyco Int32,  phizml Int32,  wrhe Int32,  zjbxhzu Int32,  ubyoqpm Int32,  cjhbzbxm Int32,  qxtpgv Int32,  quwg Int32,  hfgakaf Int32,  lrqewsp Int32,  lsjst Int32,  uraiutx Int32,  vntipr Int32,  dyoxzeg Int32,  augps Int32,  yvoo Int32,  ggwxgn Int32,  blnkrsqs Int32,  rsputdx Int32,  hhhrv Int32,  pkul Int32,  hzrf Int32,  nyzqznw Int32,  hagks Int32,  dfxx Int32,  fpnec Int32,  sdvl Int32,  xhpwscq Int32,  ejawl Int32,  arnlkuks Int32,  dbfgg Int32,  xfrgfx Int32,  hdluvyvv Int32,  evzsyew Int32,  qnnxr Int32,  trijht Int32,  ivzlwx Int32,  rdxjmbu Int32,  cghpqu Int32,  qwriiip Int32,  pnnsx Int32,  jnhnb Int32,  nlmkbrdc Int32,  lxkypp Int32,  qwcpu Int32,  vjeb Int32,  nwpmijqt Int32,  yiqdv Int32,  wvuhn Int32,  dsle Int32,  hxcvk Int32,  ddxte Int32,  vjtae Int32,  ldgcxspl Int32,  qqzqrd Int32,  mrgsro Int32,  svszss Int32,  tmmdvq Int32,  pkjuvvtn Int32,  runjjsya Int32,  vhvln Int32,  fndvo Int32,  wmpdcjy Int32,  ptwe Int32,  refomn Int32,  mjtktet Int32,  smni Int32,  pyugee Int32,  llxjjwcm Int32,  yfduns Int32,  gntqr Int32,  ldfo Int32,  bucms Int32,  xvyggn Int32,  cqgfein Int32,  cmmky Int32,  vlwdg Int32,  tlst Int32,  fkqpt Int32,  hwbcik Int32,  rwnictpi Int32,  eezczruy Int32,  ygpcgimx Int32,  becm Int32,  vgdmewl Int32,  gidz Int32,  fxnbu Int32,  xbzxze Int32,  mscxvj Int32,  xvcgrn Int32,  dsxhvn Int32,  hxtru Int32,  bmvjv Int32,  qpuh Int32,  rtflqb Int32,  zhjivqg Int32,  ovebt Int32,  cghizojt Int32,  vljrthr Int32,  lurt Int32,  pywq Int32,  tylzu Int32,  kdiwwjl Int32,  noyisn Int32,  lusdgey Int32,  qetwl Int32,  dkxbiqm Int32,  bzhkzf Int32,  qwbfdr Int32,  cyogm Int32,  neqsjno Int32,  ygvli Int32,  jjknydiy Int32,  kxmv Int32,  qdhmg Int32,  jcizo Int32,  ezofil Int32,  jhvm Int32,  eplzilu Int32,  wijj Int32,  sbqhbtg Int32,  shjof Int32,  buipxul Int32,  qjjsu Int64,  xaclgd Int64,  tmxtyl Int64,  migly Int64,  mffpcxp Int64,  qsqorlg Float64,  dhljxoxd Float64)
+ ENGINE = ReplicatedMergeTree('/clickhouse/tables/{layer}-{shard}/vodplay_replica', '{replica}')
+ PARTITION BY partner
+ ORDER BY id SETTINGS index_granularity = 8192 ;
+
+
+CREATE TABLE test.vodplay_replica_dist ON CLUSTER cluster3
+AS test.vodplay_replica
+ENGINE = Distributed(cluster3, test, vodplay_replica, rand())
+
+INSERT INTO test.vodplay_replica_dist SELECT * FROM test.vodplay_datain_test;
+
+ENGINE = ReplicatedMergeTree('/clickhouse/tables/cluster3-shard01/vodplay_replica', '10.10.130.101')
+ENGINE = ReplicatedMergeTree('/clickhouse/tables/cluster3-shard01/vodplay_replica', '10.10.130.6')
+
+ENGINE = ReplicatedMergeTree('/clickhouse/tables/cluster3-shard02/vodplay_replica', '10.10.130.7')
+ENGINE = ReplicatedMergeTree('/clickhouse/tables/cluster3-shard02/vodplay_replica', '10.10.130.8')
+
+
+
+CREATE TABLE IF NOT EXISTS test.mini2
+ ( id Int64,
+ partner String,
+ action Int32,
+  albumId Float64,
+ datetime Date,
+ mac String )
+ ENGINE = MergeTree()
+ PARTITION BY toYYYYMM(datetime)    ORDER BY (`partner`,`albumId`) SETTINGS index_granularity = 8192
+
+
+ java -jar mini.jar test.mini 1 1000 1500
+
+#!/bin/bash
+nohup java -jar mini2.jar test.mini 1 1 1500 > ./console_output1 2>&1 &
+nohup java -jar mini.jar test.mini 1 1000 1500 > ./console_output2 2>&1 &
+nohup java -jar mini.jar test.mini 1 1000 1500 > ./console_output3 2>&1 &
+nohup java -jar mini.jar test.mini 1 1000 1500 > ./console_output4 2>&1 &
+nohup java -jar mini.jar test.mini 1 1000 1500 > ./console_output5 2>&1 &
+nohup java -jar mini.jar test.mini 1 1000 1500 > ./console_output6 2>&1 &
+
+clickhouse-client -h  127.0.0.1 -m -d test -f CSV -q "select * from test.vodplay limit 100000000 " > testvodplay.csv
+
+cat testvodplay.csv | clickhouse-client --host=127.0.0.1 --port=9000 --database=test --query="INSERT INTO vodplay_datain FORMAT CSVWithNames" --input_format_allow_errors_num=100000
+
+
+
+select table, countDistinct(name) as num_cols,formatReadableSize(sum(data_compressed_bytes) as c) as comp,
+formatReadableSize(sum(data_uncompressed_bytes)as r) as raw,
+c/r as com_r
+from system.columns
+group by table
+order by raw desc
+
+
+ #!/bin/bash
+time3=$(date "+%Y-%m-%d %H:%M:%S")
+echo $time3
+clickhouse-client --query='INSERT INTO table test.vodplay_datain FORMAT CSVWithNames' < testvodplay.csv
+time4=$(date "+%Y-%m-%d %H:%M:%S")
+echo $time4
+
+
+clickhouse-client --query='INSERT INTO table test.mini2 FORMAT CSVWithNames' < minidata.csv
+
+
+CREATE TABLE test.vodplay_datain_dist3 ON CLUSTER cluster_3shards_1replicas
+AS test.vodplay_datain
+ENGINE = Distributed(cluster_3shards_1replicas, test, vodplay_datain, rand())
+
+
+
+
+clickhouse-client --query='INSERT INTO table test.vodplay_datain_dist3 FORMAT CSVWithNames' < billion.csv
+
+
+
+dd if=/dev/zero bs=1024 count=10000000 of=/data1/data/clickhousedata/1Gb.file
+
+次处理1block而不是处理1行
+
+
+
+
+非向量化的实现实现方式，它的计算效率很慢，一次一个变量
+for i in range(n):
+? ? y += w[i]*x[i]
+
+
+向量化的实现方式，计算效率就快很多，一次处理一组变量，需要依赖cpu的SIMD来实现并行处理运算。
+y = np.dot(w,x)
+
+
+
+
+clickhouse-client -h  127.0.0.1 -m -d test -f CSV -q "select * from test.mini2 limit 100000000 " > mini.csv
+
+
+clickhouse-client --query='INSERT INTO table test.mini2 FORMAT CSVWithNames' < mini.csv
+
+
+
+clickhouse-client -h  127.0.0.1 -m -d test -f CSV -q "select * from bdb.vodplay_bak limit 10000000 " > billion.csv
+
+clickhouse-client -h  10.10.130.6 -m -d test -f CSV -q "select * from bdb.vodplay_bak limit 10000000 " > billion.csv
+
+
+java -jar mini2.jar test.mini_local_test 1 1 2000
+
+      nohup ./local.sh  > ./out.log 2>&1 &
+      nohup ./local1.sh  > ./out1.log 2>&1 &
+      nohup ./local2.sh > ./out2.log 2>&1 &
+      nohup ./local3.sh > ./out3.log 2>&1 &
+      nohup ./local4.sh > ./out4.log 2>&1 &
+
+
+echo 'performance'  | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+echo 'powersave'  | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS test.datain_test ( id Int64,  partner String,  time String,  mac String,  knyx String,  wtksbbw String,  bdufbzes String,  ovvwf String,  clfgy String,  cpvbymo String,  rpum String,  vrvdl String,  jahwv String,  nkqiq String,  gvcp String,  cfqrm String,  pgqgm String,  ltsr String,  jbyk String,  ulhsjkar String,  oump String,  drabtpf String,  obkmxfj String,  olsec String,  gafop String,  tgamugqd String,  pxcrl String,  ihhblvki String,  eposmeid String,  xcfy String,  knpuw String,  zxrhnr String,  mpueilc String,  pkzn String,  fcrntn String,  yfbsvju String,  engytdz String,  ilfql String,  kdefi String,  ixdvl String,  dqpxv String,  fvprz String,  ysuwkc String,  npet String,  xgbx String,  omqqie String,  blnns String,  duhfwtyr String,  geaso String,  whcat String,  fvbutg String,  hius String,  pnmka String,  lezkos String,  snyudwnh String,  nlecv String,  cqdslm String,  gbonb String,  kpdp String,  encunh String,  qpjajs String,  kjnu String,  gofsh String,  licc String,  jozci String,  iteinbgi String,  xefus String,  ffpmn String,  yhvrkxh String,  cxwixbw String,  qcezs String,  znnxajr String,  ssfuves String,  pfane String,  kolssld String,  yykb String,  xlnxgk String,  anycirye String,  mabop String,  dytje String,  gmoamj String,  yyzldc String,  pixynyqc String,  hkbiyuk String,  xikdpdb String,  lnyfovb String,  cgtljdt String,  asootylx String,  ohkkew String,  qjeafhfi String,  ueifpuv String,  osqruuv String,  ikepfqx String,  kqavit String,  alhvbuxh String,  eqpksv String,  objdyxb String,  ycnqnsf String,  vivcm String,  bltlu String,  yzpfkuaw String,  fdrusdj String,  iqmisreb String,  ekachmy String,  fvux String,  wexc String,  tifi String,  kmkvzwhk String,  arnvd String,  dfnwefa String,  lsluyqx String,  mppfatl String,  hibxlso String,  pgyclo String,  kxout String,  qbuqek String,  jqlppib String,  ebneux String,  uwpxwcq String,  fxavxem String,  bcxcj String,  btmlcmy String,  piewv String,  ollcfn String,  vpmgfeqo String,  dtdgchw String,  ctjim String,  wudyfaq String,  tmiggfm String,  xjyui String,  rcbzylb String,  rcvbmn String,  ifvbw String,  ofmf String,  rlsmeu String,  tmcytojh String,  yclxfmdu String,  idqm String,  wqnkfqd String,  buolnqrx String,  bdrlo String,  rdysaj String,  khrjnim String,  hsqoqh String,  ppvhwckb String,  nmhyw String,  gnmlxcy String,  dxjkowmz String,  nmtogu String,  jvdpsfh String,  dhbpcmg String,  jxoqn String,  sfvafw String,  rplsjou String,  ovxqwt String,  fwhitp String,  socvpeb String,  tvrbaa String,  ppcwm String,  cjdsddy String,  muqkgj String,  zqmklgxr String,  hixyy String,  rvajwqr String,  xtswutn String,  exjgenmc String,  nyse String,  djblh String,  uevuse String,  xoox String,  lyggl String,  wwexa String,  wwmym String,  jccpf String,  ksmf String,  giozpt String,  vbsiw String,  sqyrqwb String,  gbwso String,  apiiefn String,  fftgtbqe String,  fbtu String,  ndkycpp String,  bggjub String,  fnjmqtb String,  ygjkrq String,  xqmyew String,  uprlwcw String,  jcthlp String,  rikvk String,  bumtkv String,  cpivhf String,  nmwrv String,  hemnw String,  niwybv String,  fqlf String,  gfobbvf String,  owqmfkz String,  jzbmf String,  nkvkq String,  ryvxpsk String,  ycgsjpv String,  wkylo String,  orwopzl String,  vtiyf String,  hsqryov String,  olbky String,  pejsq String,  mibt String,  qmiiynu String,  cxebtsk String,  kkim String,  uyjcger String,  bjrkooc String,  bsbf String,  njvbqj String,  euvw String,  msejfb String,  gxrtwfhm String,  udcbl String,  emryhhn String,  njfwhvj String,  wmauv String,  bmccx String,  jhqev String,  ktgjdzc String,  sglys String,  bsepkhxm String,  yxgnfsr String,  hocpi String,  sebwati String,  ppfvjih String,  ydwm String,  fmka String,  xfooceb String,  inimqzxx String,  huuotjt String,  tmhirnol String,  rueif String,  htjsytj String,  cdojktzo String,  vkjd String,  zukkfmfe String,  tpbvvfs String,  jvpkvgnm String,  rwgivjl String,  qgoblfi String,  phsbdryl String,  uycjyj String,  pvvhpdd String,  qmuxfbv String,  vjxiyev String,  srhexyh String,  bifsnwn String,  ktni String,  eqvxytd String,  bngmykk String,  vrrqpt String,  kifjk String,  ahikr String,  dkfqbo String,  khjmv String,  mmnwfmh String,  fksquw Int32,  bxvdh Int32,  hsiiynk Int32,  qfhijyxm Int32,  tbfaj Int32,  xdwhlvk Int32,  xahtmj Int32,  umqnzdf Int32,  dieovuc Int32,  vqbs Int32,  iafinjq Int32,  cgckqjh Int32,  jpcikn Int32,  gzjorn Int32,  cblexop Int32,  rcejtw Int32,  ujwbyumh Int32,  yrbofo Int32,  epveksq Int32,  uvmv Int32,  rcrng Int32,  vqpjqgc Int32,  rkibu Int32,  ffzkpjd Int32,  wdyoecf Int32,  ulwuwq Int32,  lflcld Int32,  oclhyco Int32,  phizml Int32,  wrhe Int32,  zjbxhzu Int32,  ubyoqpm Int32,  cjhbzbxm Int32,  qxtpgv Int32,  quwg Int32,  hfgakaf Int32,  lrqewsp Int32,  lsjst Int32,  uraiutx Int32,  vntipr Int32,  dyoxzeg Int32,  augps Int32,  yvoo Int32,  ggwxgn Int32,  blnkrsqs Int32,  rsputdx Int32,  hhhrv Int32,  pkul Int32,  hzrf Int32,  nyzqznw Int32,  hagks Int32,  dfxx Int32,  fpnec Int32,  sdvl Int32,  xhpwscq Int32,  ejawl Int32,  arnlkuks Int32,  dbfgg Int32,  xfrgfx Int32,  hdluvyvv Int32,  evzsyew Int32,  qnnxr Int32,  trijht Int32,  ivzlwx Int32,  rdxjmbu Int32,  cghpqu Int32,  qwriiip Int32,  pnnsx Int32,  jnhnb Int32,  nlmkbrdc Int32,  lxkypp Int32,  qwcpu Int32,  vjeb Int32,  nwpmijqt Int32,  yiqdv Int32,  wvuhn Int32,  dsle Int32,  hxcvk Int32,  ddxte Int32,  vjtae Int32,  ldgcxspl Int32,  qqzqrd Int32,  mrgsro Int32,  svszss Int32,  tmmdvq Int32,  pkjuvvtn Int32,  runjjsya Int32,  vhvln Int32,  fndvo Int32,  wmpdcjy Int32,  ptwe Int32,  refomn Int32,  mjtktet Int32,  smni Int32,  pyugee Int32,  llxjjwcm Int32,  yfduns Int32,  gntqr Int32,  ldfo Int32,  bucms Int32,  xvyggn Int32,  cqgfein Int32,  cmmky Int32,  vlwdg Int32,  tlst Int32,  fkqpt Int32,  hwbcik Int32,  rwnictpi Int32,  eezczruy Int32,  ygpcgimx Int32,  becm Int32,  vgdmewl Int32,  gidz Int32,  fxnbu Int32,  xbzxze Int32,  mscxvj Int32,  xvcgrn Int32,  dsxhvn Int32,  hxtru Int32,  bmvjv Int32,  qpuh Int32,  rtflqb Int32,  zhjivqg Int32,  ovebt Int32,  cghizojt Int32,  vljrthr Int32,  lurt Int32,  pywq Int32,  tylzu Int32,  kdiwwjl Int32,  noyisn Int32,  lusdgey Int32,  qetwl Int32,  dkxbiqm Int32,  bzhkzf Int32,  qwbfdr Int32,  cyogm Int32,  neqsjno Int32,  ygvli Int32,  jjknydiy Int32,  kxmv Int32,  qdhmg Int32,  jcizo Int32,  ezofil Int32,  jhvm Int32,  eplzilu Int32,  wijj Int32,  sbqhbtg Int32,  shjof Int32,  buipxul Int32,  qjjsu Int64,  xaclgd Int64,  tmxtyl Int64,  migly Int64,  mffpcxp Int64,  qsqorlg Float64,  dhljxoxd Float64) ENGINE = MergeTree() PARTITION BY partner ORDER BY id SETTINGS index_granularity = 8192
+
+
+
+
+clickhouse-client --query='INSERT INTO table test.datain_test FORMAT CSV' < test.dat
+
+
+java -jar writebigdata_fast.jar 1 /data1/data/clickhousedata/forload/fast/1.csv
+
+
+clickhouse-client --query='INSERT INTO table test.datain_test FORMAT CSV' < 10.csv
+
+
+
+nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10.csv > 10.log  2>&1 &
+
+nohup java -jar writebigdata.jar 100 /data1/data/clickhousedata/forload/100.csv > 100.log  2>&1 &
+
+nohup java -jar writebigdata.jar 1000 /data1/data/clickhousedata/forload/1000.csv > 1000.log 2>&1 &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
