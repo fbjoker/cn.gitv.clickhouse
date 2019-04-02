@@ -1,18 +1,18 @@
 package com.virtusai.clickhouseclient.produer;
 
 import com.virtusai.clickhouseclient.ClickHouseClient;
-import cn.gitv.util.DataUtil;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.math3.random.RandomDataGenerator;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.virtusai.clickhouseclient.utils.DataUtils.*;
+import static com.virtusai.clickhouseclient.utils.DataUtils.getRandomIp;
+import static com.virtusai.clickhouseclient.utils.DataUtils.nextTime;
 
-public class ProduerData {
+public class ProduerDataFast {
     public static void main(String[] args) throws InterruptedException {
 
 
