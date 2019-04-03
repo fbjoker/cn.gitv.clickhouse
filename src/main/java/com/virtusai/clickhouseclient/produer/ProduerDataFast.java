@@ -1,9 +1,11 @@
 package com.virtusai.clickhouseclient.produer;
 
 import com.virtusai.clickhouseclient.ClickHouseClient;
+import javafx.scene.input.DataFormat;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -89,11 +91,16 @@ public class ProduerDataFast {
 
 
         long startInsertTime = System.currentTimeMillis();
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
+        client.post("INSERT INTO "+table, rows);
+        client.post("INSERT INTO "+table, rows);
+        client.post("INSERT INTO "+table, rows);
+        client.post("INSERT INTO "+table, rows);
         client.post("INSERT INTO "+table, rows);
         long endInsertTime = System.currentTimeMillis();
         System.out.println("单条插入时长："+(endInsertTime-startInsertTime));
-
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         Thread.sleep(20000);
         client.close();
     }
