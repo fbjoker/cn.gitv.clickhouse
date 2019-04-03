@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static com.virtusai.clickhouseclient.utils.DataUtils.getRandomIp;
 import static com.virtusai.clickhouseclient.utils.DataUtils.nextTime;
 
-public class ProduerDataFast {
+public class MthreadProduerDataFast {
     public static void main(String[] args) throws InterruptedException {
 
 
@@ -87,14 +87,38 @@ public class ProduerDataFast {
         System.out.println("生成数据花费时长："+(end-start));
         System.out.println(rows.size());
 
-
+        ExecutorService fixedThreadPool = Executors.newCachedThreadPool();
+        fixedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                client.post("INSERT INTO "+table, rows);
+            }
+        });
+        fixedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                client.post("INSERT INTO "+table, rows);
+            }
+        });
+        fixedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                client.post("INSERT INTO "+table, rows);
+            }
+        });
+        fixedThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                client.post("INSERT INTO "+table, rows);
+            }
+        });
         long startInsertTime = System.currentTimeMillis();
 
         client.post("INSERT INTO "+table, rows);
         long endInsertTime = System.currentTimeMillis();
         System.out.println("单条插入时长："+(endInsertTime-startInsertTime));
 
-        Thread.sleep(20000);
+        Thread.sleep(30000);
         client.close();
     }
 
