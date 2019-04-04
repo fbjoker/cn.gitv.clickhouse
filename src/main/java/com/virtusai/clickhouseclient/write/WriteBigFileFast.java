@@ -232,7 +232,7 @@ public class WriteBigFileFast {
         long len = LEN*row;
 
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 2000; i++) {
 
             stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
         }

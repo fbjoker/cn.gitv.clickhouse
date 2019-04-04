@@ -100,21 +100,21 @@ public class MthreadWriteBigFile {
         MappedByteBuffer mbb = null;
         byte[] data = null;
         long len = LEN*row;
-        int threadNumber=20;
+        int threadNumber=10;
 
 
 
 
         //一次插入的数据是20W，
-        for (int iter = 0; iter <row*5; iter++) {
+        for (int iter = 0; iter <row*10; iter++) {
 //            StringBuilder stringBuilder = new StringBuilder();
+            long start11 = System.currentTimeMillis();
             StringBuffer stringBuilder = new StringBuffer();
             //用来计算，只有当所有的线程都执行完毕countDownLatch.await()才会释放
             final CountDownLatch countDownLatch = new CountDownLatch(threadNumber);
-            long start11 = System.currentTimeMillis();
-            ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadNumber+1);
-            long end11 = System.currentTimeMillis();
-            System.out.println("write:"+(end11-start11));
+//            ExecutorService fixedThreadPool = Executors.newFixedThreadPool(threadNumber+1);
+            ExecutorService fixedThreadPool = Executors.newCachedThreadPool();
+            //最慢的2个线程不要了
             for (int i = 0; i < threadNumber; i++) {
 
                 fixedThreadPool.execute(new Runnable() {
@@ -123,28 +123,21 @@ public class MthreadWriteBigFile {
                         StringBuilder stringBuilderthread = new StringBuilder();
 
                         long start = System.currentTimeMillis();
-                        for (int i = 0; i < 500; i++) {
-
-//                            stringBuilderthread.append( generateData(id, fieldsType, fieldNumber, partner));
-
+                        for (int i = 0; i < 10000; i++) {
                             stringBuilder.append( generateData(id, fieldsType, fieldNumber, partner));
 
                         }
-                        long end = System.currentTimeMillis();
-                        System.out.println(Thread.currentThread().getName()+":"+(end-start));
+                        long end11 = System.currentTimeMillis();
+                       // System.out.println(Thread.currentThread().getName()+(end11-start11));
 
-//                        stringBuilder.append(stringBuilderthread);
-//                        System.out.println(stringBuilder.length());
                         countDownLatch.countDown();
                     }
                 });
 
             }
             try {
-                long start = System.currentTimeMillis();
                 countDownLatch.await();
-                long end = System.currentTimeMillis();
-                System.out.println(Thread.currentThread().getName()+":"+(end-start));
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -167,7 +160,8 @@ public class MthreadWriteBigFile {
 
             //一定要关闭
             fixedThreadPool.shutdown();
-            System.out.println("end");
+            long end11 = System.currentTimeMillis();
+            System.out.println("write:"+(end11-start11));
 
         }
 
@@ -247,11 +241,12 @@ public class MthreadWriteBigFile {
         int row = Integer.parseInt(args[0]);
         String path=args[1];
 
-        long start = System.currentTimeMillis();
 
+        long start = System.currentTimeMillis();
         writeBigDataWithMappedByteBuffer(ThreadLocalRandom.current().nextLong(100000000), fieldsType, fieldNumber, partner,row,path);
         long end = System.currentTimeMillis();
-        System.out.println(end-start);
+
+        System.out.println("all:"+(end-start));
 
     }
 }
