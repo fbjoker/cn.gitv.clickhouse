@@ -53,7 +53,8 @@ public class ProduerDataFast {
                 "Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, " +
                 "Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Int, Long, Long, Long, Long, " +
                 "Long, Double, Double";
-        String[] partner= {"YNYDZX","YNYDHW","JS_CMCC_CP","JS_CMCC_CP_ZX","HNYD","SD_CMCC_JN","LNYD","SAXYD"};
+//        String[] partner= {"YNYDZX","YNYDHW","JS_CMCC_CP","JS_CMCC_CP_ZX","HNYD","SD_CMCC_JN","LNYD","SAXYD"};
+        String[] partner= {"YNYDZX","YNYDHW","HNYD"};
         // Initialize client (endpoint, username, password)
 
         String table=args[0];
@@ -94,14 +95,20 @@ public class ProduerDataFast {
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
         client.post("INSERT INTO "+table, rows);
-        client.post("INSERT INTO "+table, rows);
-        client.post("INSERT INTO "+table, rows);
-        client.post("INSERT INTO "+table, rows);
-        client.post("INSERT INTO "+table, rows);
+        long endone = System.currentTimeMillis();
+        System.out.println("单条插入时长："+(endone-startInsertTime));
+//        Thread.sleep(1000);
+//        client.post("INSERT INTO "+table, rows);
+//        Thread.sleep(1000);
+//        client.post("INSERT INTO "+table, rows);
+//        Thread.sleep(1000);
+//        client.post("INSERT INTO "+table, rows);
+//        Thread.sleep(1000);
+//        client.post("INSERT INTO "+table, rows);
         long endInsertTime = System.currentTimeMillis();
         System.out.println("单条插入时长："+(endInsertTime-startInsertTime));
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        Thread.sleep(20000);
+        Thread.sleep(50000);
         client.close();
     }
 
@@ -109,15 +116,15 @@ public class ProduerDataFast {
 
          Object[] data=new Object[fieldNumber];
         data[0]=id;
-        data[1]=partner[new Random().nextInt(8)];
-        data[2]=new SimpleDateFormat("yyyy-MM-dd ").format(nextTime());
+        data[1]=partner[new Random().nextInt(3)];
+        data[2]=new SimpleDateFormat("yyyy-MM-dd").format(nextTime());
         data[3]=getRandomIp();
         String[] fieldsTypeList = fieldsType.split(",");
         for(int i=4;i<fieldNumber;i++){
 
             switch(fieldsTypeList[i-4].trim()){
 //                case "String":data[i]="abcdefg";
-                case "String":data[i]=RandomStringUtils.randomAlphanumeric(new Random().nextInt(8)+1);
+                case "String":data[i]=RandomStringUtils.randomAlphanumeric(new Random().nextInt(6)+1);
                     break;
                 case "Int":data[i]= ThreadLocalRandom.current().nextInt(10000);
                     break;
