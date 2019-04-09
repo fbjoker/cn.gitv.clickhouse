@@ -708,7 +708,7 @@ CREATE TABLE IF NOT EXISTS loadtest.datain_test1000 ( id Int64,  partner String,
 
 
 
-
+insert into merge_all select *,toString(120),now (),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),toString(120),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),rand(),toFloat64(rand64()),toFloat64(rand64()) from numbers(10000000000);
 
 
 
@@ -760,6 +760,8 @@ nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10_3.csv 
 nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10_4.csv > 10_4.log  2>&1 &
 nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10_5.csv > 10_5.log  2>&1 &
 nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10_6.csv > 10_6.log  2>&1 &
+nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10_7.csv > 10_7.log  2>&1 &
+nohup java -jar writebigdata.jar 10 /data1/data/clickhousedata/forload/10_8.csv > 10_8.log  2>&1 &
 
 
 nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_2.csv > 1_2.log  2>&1 &
@@ -767,10 +769,146 @@ nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_3.csv > 
 nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_4.csv > 1_4.log  2>&1 &
 nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_5.csv > 1_5.log  2>&1 &
 nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_6.csv > 1_6.log  2>&1 &
+nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_7.csv > 1_7.log  2>&1 &
+nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1_8.csv > 1_8.log  2>&1 &
 
 
 
-nohup ./insert_buffer.sh  > insert_buffer2.log 2>&1 &
+nohup ./insert1.sh  > insert1.log 2>&1 &
+nohup ./insert1_2.sh  > insert1_2.log 2>&1 &
+nohup ./insert1_3.sh  > insert1_3.log 2>&1 &
+nohup ./insert1_4.sh  > insert1_4.log 2>&1 &
+nohup ./insert1_5.sh  > insert1_5.log 2>&1 &
+nohup ./insert1_6.sh  > insert1_6.log 2>&1 &
+nohup ./insert1_7.sh  > insert1_7.log 2>&1 &
+nohup ./insert1_8.sh  > insert1_8.log 2>&1 &
+
+
+nohup ./insert10.sh  > insert10.log 2>&1 &
+nohup ./insert10_2.sh  > insert10_2.log 2>&1 &
+nohup ./insert10_3.sh  > insert10_3.log 2>&1 &
+nohup ./insert10_4.sh  > insert10_4.log 2>&1 &
+nohup ./insert10_5.sh  > insert10_5.log 2>&1 &
+nohup ./insert10_6.sh  > insert10_6.log 2>&1 &
+nohup ./insert10_7.sh  > insert10_7.log 2>&1 &
+nohup ./insert10_8.sh  > insert10_8.log 2>&1 &
+
+
+
+nohup ./insert100.sh  > insert100.log 2>&1 &
+nohup ./insert100_2.sh  > insert100_2.log 2>&1 &
+nohup ./insert100_3.sh  > insert100_3.log 2>&1 &
+
+clickhouse-client -h  127.0.0.1 -m -d loadtest -f CSV -q "select * from loadtest.datain_test1 limit 100000 " >10w.csv
+
+
+nohup java -jar writebigdata.jar 0.1 /data1/data/clickhousedata/forload/10w.csv > 10w.log  2>&1 &
+nohup java -jar writebigdata.jar 1 /data1/data/clickhousedata/forload/1.csv > 1.log  2>&1 &
+
+
+git clone --depth 1 https://github.com/brendangregg/perf-tools
+
+
+./perf-tools/bin/cachestat
+
+
+for x in `seq 1 1 10`; do ps -eo state,pid,cmd | grep "^D"; echo "----"; sleep 5; done
+
+rrqm/s:          每秒进行 merge 的读操作数目。即 delta(rmerge)/s
+wrqm/s:         每秒进行 merge 的写操作数目。即 delta(wmerge)/s
+r/s:            每秒完成的读 I/O 设备次数。即 delta(rio)/s
+w/s:            每秒完成的写 I/O 设备次数。即 delta(wio)/s
+rsec/s:         每秒读扇区数。即 delta(rsect)/s
+wsec/s:         每秒写扇区数。即 delta(wsect)/s
+rkB/s:          每秒读K字节数。是 rsect/s 的一半，因为每扇区大小为512字节。(需要计算)
+wkB/s:          每秒写K字节数。是 wsect/s 的一半。(需要计算)
+avgrq-sz:       平均每次设备I/O操作的数据大小 (扇区)。delta(rsect+wsect)/delta(rio+wio)
+avgqu-sz:       平均I/O队列长度。即 delta(aveq)/s/1000 (因为aveq的单位为毫秒)。
+await:          平均每次设备I/O操作的等待时间 (毫秒)。即 delta(ruse+wuse)/delta(rio+wio)
+svctm:          平均每次设备I/O操作的服务时间 (毫秒)。即 delta(use)/delta(rio+wio)
+%util:          一秒中有百分之多少的时间用于 I/O 操作，或者说一秒中有多少时间 I/O 队列是非空的。即 delta(use)/s/1000 (因为use的单位为毫秒)
+　　如果 %util 接近 100%，说明产生的I/O请求太多，I/O系统已经满负荷，该磁盘可能存在瓶颈。
+
+
+
+
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p1.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p2.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p3.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p4.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p5.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p6.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p7.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p8.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p9.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p11.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p12.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p13.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p14.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p15.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p16.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p17.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p18.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p19.log 2>&1 &
+nohup java -jar producerFast.jar  test.vodplay_datain 10 >p20.log 2>&1 &
+
+
+1073741824
+
+
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p1.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p2.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p3.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p4.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p5.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p6.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p7.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p8.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p9.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 1 >p10.log 2>&1 &
+
+
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p1.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p2.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p3.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p4.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p5.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p6.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p7.log 2>&1 &
+nohup java -jar producerFast2.jar  test.vodplay_datain 10 >p8.log 2>&1 &
+
+
+
+
+find -maxdepth 10 -name stripe
+
+
+clickhouse {
+      host = "10.10.121.213:8123"
+      clickhouse.socket_timeout = 50000
+      database = "default"
+     table = "test_jdbc_example"
+      fields = ["day", "name", "age"]
+      username = "default"
+      password = "123456"
+      bulk_size = 20000
+       }
+
+
+
+fields = ["day", "name", "age"]
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
